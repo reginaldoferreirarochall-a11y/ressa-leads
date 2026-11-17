@@ -1,0 +1,34 @@
+name: RESSA Lista de Leads
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ressa-leads
+  cancel-in-progress: false
+
+jobs:
+  leads:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Gerar página de leads
+        run: node leads.js
+      - name: Publicar página
+        run: |
+          git config user.name "RESSA Leads"
+          git config user.email "actions@github.com"
+          git add docs/leads.html
+          git commit -m "Lista de leads atualizada" || echo "sem mudanças"
+          git push

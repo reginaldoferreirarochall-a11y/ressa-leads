@@ -1,0 +1,47 @@
+name: RESSA Extrator de Leads
+
+on:
+  workflow_dispatch:
+    inputs:
+      nicho:
+        description: 'Nicho/segmento (ex.: vidraçaria)'
+        required: true
+        type: string
+      regiao:
+        description: 'Cidade/região (ex.: Suzano SP)'
+        required: true
+        type: string
+      qtd:
+        description: 'Quantidade máxima de resultados'
+        required: true
+        default: '40'
+        type: string
+
+concurrency:
+  group: ressa-extract
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Preparar busca
+        run: echo "${{ inputs.nicho }} em ${{ inputs.regiao }}" > queries.txt
+      - name: Extrair do Google Maps (gosom)
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work gosom/google-maps-scraper:latest -input queries.txt -results results.csv -depth 1 || true
+          ls -la
+      - name: Conferir resultado bruto
+        run: |
+          if [ -f results.csv ]; then echo "Linhas:"; wc -l results.csv; echo "Primeiras linhas:"; head -n 5 results.csv; else echo "results.csv NAO foi gerado"; fi
+      - name: Inserir leads novos no Neon
+        run: |
+          npm install --no-save @neondatabase/serverless
+          node insert-leads.js results.csv "${{ inputs.qtd }}"

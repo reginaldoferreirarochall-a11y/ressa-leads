@@ -1,0 +1,55 @@
+name: RESSA Admin de Leads
+
+on:
+  workflow_dispatch:
+    inputs:
+      acao:
+        description: 'O que fazer com o lead'
+        required: true
+        default: 'queue'
+        type: choice
+        options:
+          - add
+          - queue
+          - hold
+          - sent
+          - invalid
+          - delete
+      telefone:
+        description: 'Telefone do lead (com DDD)'
+        required: true
+        type: string
+      nome:
+        description: 'Nome da loja (só para acao=add)'
+        required: false
+        default: ''
+        type: string
+      cidade:
+        description: 'Cidade (só para acao=add)'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: ressa-admin
+  cancel-in-progress: false
+
+jobs:
+  admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ADMIN_ACAO: ${{ inputs.acao }}
+      ADMIN_PHONE: ${{ inputs.telefone }}
+      ADMIN_NOME: ${{ inputs.nome }}
+      ADMIN_CIDADE: ${{ inputs.cidade }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Executar ação
+        run: node admin.js

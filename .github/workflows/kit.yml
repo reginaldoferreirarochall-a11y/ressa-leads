@@ -1,0 +1,50 @@
+name: RESSA Kit Manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      qtd:
+        description: 'Quantas lojas entram no kit'
+        required: true
+        default: '5'
+        type: string
+      incluir:
+        description: '1 = incluir lojas de kits anteriores ainda não marcadas'
+        required: true
+        default: '0'
+        type: choice
+        options:
+          - '0'
+          - '1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ressa-kit
+  cancel-in-progress: false
+
+jobs:
+  kit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      KIT_QTD: ${{ inputs.qtd }}
+      KIT_INCLUIR: ${{ inputs.incluir }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Gerar kit
+        run: node kit.js
+      - name: Publicar kit no Pages
+        run: |
+          git config user.name "RESSA Kit"
+          git config user.email "actions@github.com"
+          git add docs/kit.html
+          git commit -m "Kit de prospecção manual" || echo "sem mudanças"
+          git push
