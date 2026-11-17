@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RESSA Leads — Central de Prospecção</title>
+<style>
+  :root{
+    --bg:#0a0a0e; --card:#17171e; --card2:#1f1f27; --line:#2a2a33;
+    --lime:#c9f24e; --purple:#c6b6fb; --pink:#f5b9dc;
+    --txt:#f4f4ec; --mut:#a2a2ac; --ink:#0c0c10; --err:#ff7a7a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--txt); padding-bottom:96px;}
+  .glow{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;}
+  .glow::before{content:''; position:absolute; width:340px; height:340px; border-radius:50%;
+    right:-120px; top:-120px; filter:blur(70px); opacity:.5;
+    background:radial-gradient(circle at 30% 30%, var(--lime), var(--purple) 55%, var(--pink));}
+  main{position:relative; z-index:1; max-width:520px; margin:0 auto; padding:18px 14px 8px;}
+  .top{display:flex; justify-content:space-between; align-items:center;}
+  .pill{display:inline-flex; align-items:center; gap:8px; background:var(--lime); color:var(--ink);
+    font-weight:800; font-size:13px; padding:8px 14px; border-radius:999px;}
+  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--ink); opacity:.65;}
+  .avatar{width:40px; height:40px; border-radius:50%; background:var(--card2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:19px;}
+  .hello{margin:20px 2px 2px; color:var(--mut); font-size:15px;}
+  h1{margin:0 2px 16px; font-size:30px; line-height:1.15; font-weight:800; letter-spacing:-.5px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:16px; margin-bottom:14px;}
+  .card h2{margin:0 0 10px; font-size:17px;}
+  .hint{font-size:13px; color:var(--mut); line-height:1.55;}
+  button{width:100%; min-height:56px; border-radius:16px; font-size:16px; font-weight:700;
+    background:var(--card2); color:var(--txt); border:1px solid var(--line); cursor:pointer; margin:6px 0; padding:12px;}
+  button:active{transform:scale(.98);}
+  button.lime{background:var(--lime); color:var(--ink); border-color:transparent;}
+  button.purple{background:var(--purple); color:var(--ink); border-color:transparent;}
+  button.pink{background:var(--pink); color:var(--ink); border-color:transparent;}
+  button.danger{background:transparent; color:var(--err); border:1px solid #4a2b2b;}
+  .btnlink{display:block; text-align:center; background:var(--lime); color:var(--ink); font-weight:800;
+    font-size:16px; padding:16px; border-radius:16px; text-decoration:none; margin:6px 0; min-height:56px;}
+  .btnlink.alt{background:var(--card2); color:var(--txt); border:1px solid var(--line);}
+  input, select, textarea{width:100%; min-height:52px; border-radius:14px; border:1px solid var(--line);
+    background:#101016; color:var(--txt); font-size:16px; padding:12px 14px; margin:6px 0; font-family:inherit;}
+  textarea{min-height:170px; line-height:1.5; resize:vertical;}
+  input::placeholder, textarea::placeholder{color:#6d6d77;}
+  #status{white-space:pre-wrap; font-size:14px; line-height:1.6;
+    background:var(--card); border:1px solid var(--line); border-radius:22px; padding:16px; min-height:64px;}
+  #fotoAtual{max-width:100%; border-radius:14px; margin:8px 0; display:none;}
+  #msg{display:none; position:fixed; left:50%; transform:translateX(-50%); bottom:104px; z-index:60;
+    max-width:92vw; padding:14px 18px; border-radius:16px; font-size:15px; font-weight:600;
+    box-shadow:0 10px 34px rgba(0,0,0,.55);}
+  #msg.ok{display:block; background:var(--lime); color:var(--ink);}
+  #msg.err{display:block; background:#3a1518; color:#ffb4b4; border:1px solid #6e2a2a;}
+  .tabpage{display:none;}
+  .tabpage.active{display:block;}
+  nav{position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(12,12,16,.92);
+    backdrop-filter:blur(12px); border-top:1px solid var(--line); padding:8px 8px calc(8px + env(safe-area-inset-bottom));}
+  nav .row{max-width:520px; margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr); gap:4px;}
+  nav button{min-height:58px; margin:0; border:0; background:transparent; color:var(--mut);
+    font-size:11.5px; font-weight:600; border-radius:14px; padding:6px 2px;}
+  nav button .ic{display:block; font-size:21px; margin-bottom:2px;}
+  nav button.active{background:var(--lime); color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<main>
+  <div class="top">
+    <span class="pill"><span class="dot"></span> RESSA LEADS · Online</span>
+    <span class="avatar">🦇</span>
+  </div>
+  <p class="hello">Olá, Reginaldo 👋</p>
+  <h1>Central de<br>Prospecção</h1>
+
+  <!-- INÍCIO -->
+  <section class="tabpage active" id="tab-inicio">
+    <div class="card" id="tokenCard">
+      <h2>🔑 Chave do painel</h2>
+      <input id="token" type="password" placeholder="Cole aqui a sua chave do GitHub" autocomplete="off">
+      <button class="lime" data-act="token-save">Salvar chave neste aparelho</button>
+      <p class="hint">A chave fica salva <b>só neste aparelho</b>. Com ela, os botões ligam os robôs do projeto.</p>
+    </div>
+    <h2 style="margin:18px 2px 8px; font-size:17px;">📊 Últimas atividades</h2>
+    <div id="status">Toque em “Atualizar status”.</div>
+    <button data-act="status" style="margin-top:10px;">🔄 Atualizar status</button>
+    <p class="hint" style="margin-top:10px;">Fluxo: <b>Extrair</b> (nicho + região + quantidade) → leads caem na <b>base</b> → você define <b>mensagem e foto</b> → gera o <b>kit</b> e envia.</p>
+  </section>
+
+  <!-- EXTRAIR -->
+  <section class="tabpage" id="tab-extrair">
+    <div class="card">
+      <h2>🎯 Nova extração</h2>
+      <input id="exNicho" type="text" placeholder="Nicho — ex.: vidraçaria" autocomplete="off">
+      <input id="exRegiao" type="text" placeholder="Região — ex.: Suzano SP" autocomplete="off">
+      <select id="exQtd">
+        <option value="10">Até 10 resultados</option>
+        <option value="20">Até 20 resultados</option>
+        <option value="40" selected>Até 40 resultados</option>
+        <option value="60">Até 60 resultados</option>
+      </select>
+      <button class="lime" data-act="extract">📥 Extrair leads</button>
+      <p class="hint">O robô busca no Google Maps e lança os telefones novos direto na base (sem repetir quem já está lá). Pode demorar alguns minutos — acompanhe no status e depois em Leads.</p>
+    </div>
+  </section>
+
+  <!-- LEADS -->
+  <section class="tabpage" id="tab-leads">
+    <div class="card">
+      <h2>👀 Base de leads</h2>
+      <button class="lime" data-act="leads-gen">🔄 Atualizar lista de leads</button>
+      <a class="btnlink alt" href="leads.html" target="_blank" rel="noopener">📂 Ver os leads</a>
+      <p class="hint">Todas as empresas capturadas: nome, telefone, cidade e situação. Depois de atualizar, espere ~1 min e abra a lista.</p>
+    </div>
+
+    <div class="card">
+      <h2>📋 Kit de envio</h2>
+      <input id="kitQtd" type="number" min="1" max="20" value="5">
+      <button class="purple" data-act="kit-gen">📋 Gerar kit</button>
+      <a class="btnlink alt" href="kit.html" target="_blank" rel="noopener">📂 Abrir o kit gerado</a>
+      <p class="hint">Monta a página de envio com as próximas lojas da fila, usando a <b>mensagem e a foto</b> da aba Mensagem. Depois de gerar, espere ~1 min e abra o kit.</p>
+    </div>
+
+    <div class="card">
+      <h2>✏️ Alterar um lead</h2>
+      <input id="admPhone" type="tel" placeholder="Telefone com DDD — ex.: 11999998888" autocomplete="off">
+      <input id="admNome" type="text" placeholder="Nome da loja (só pra adicionar)" autocomplete="off">
+      <input id="admCidade" type="text" placeholder="Cidade (só pra adicionar)" autocomplete="off">
+      <select id="admAcao">
+        <option value="add">➕ Adicionar na fila</option>
+        <option value="queue">🟢 Liberar pra fila</option>
+        <option value="hold">⏸️ Travar (não entra no kit)</option>
+        <option value="sent">✅ Marcar como enviado</option>
+        <option value="invalid">🚫 Marcar sem WhatsApp</option>
+        <option value="delete">🗑️ Excluir lead</option>
+      </select>
+      <button class="pink" data-act="adm-send">✏️ Executar alteração</button>
+      <p class="hint">A alteração roda em ~30s no robô. Confira atualizando a lista de leads.</p>
+    </div>
+  </section>
+
+  <!-- MENSAGEM -->
+  <section class="tabpage" id="tab-mensagem">
+    <div class="card">
+      <h2>✍️ Mensagem da campanha</h2>
+      <textarea id="cfgMsg" placeholder="A mensagem que vai pras lojas..."></textarea>
+      <button data-act="cfg-load">↩️ Carregar mensagem atual</button>
+      <button class="lime" data-act="cfg-save">💾 Salvar mensagem</button>
+      <p class="hint">Essa é a mensagem exata que entra no kit de envio. Edite e salve — vale a partir do próximo kit gerado.</p>
+    </div>
+
+    <div class="card">
+      <h2>🖼️ Foto da campanha</h2>
+      <img id="fotoAtual" alt="Foto atual da campanha">
+      <input id="fotoFile" type="file" accept="image/*">
+      <button class="purple" data-act="foto-send">⬆️ Enviar nova foto</button>
+      <p class="hint">A foto vai junto em cada conversa do kit. Tamanho máximo ~1 MB (JPG).</p>
+    </div>
+  </section>
+
+  <!-- AJUSTES -->
+  <section class="tabpage" id="tab-ajustes">
+    <div class="card">
+      <h2>🔑 Chave do painel</h2>
+      <button class="danger" data-act="token-clear">🗑️ Apagar chave deste aparelho</button>
+      <p class="hint">Apaga só a chave salva aqui — o projeto continua intacto.</p>
+    </div>
+    <div class="card">
+      <h2>ℹ️ Sobre</h2>
+      <p class="hint">RESSA Leads — extração via gosom/google-maps-scraper, base no Neon, robôs no GitHub Actions. Funciona com o PC desligado e sem depender de IA: tudo por código.</p>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <div class="row">
+    <button data-tab="inicio" class="active"><span class="ic">🏠</span>Início</button>
+    <button data-tab="extrair"><span class="ic">🎯</span>Extrair</button>
+    <button data-tab="leads"><span class="ic">👀</span>Leads</button>
+    <button data-tab="mensagem"><span class="ic">✍️</span>Mensagem</button>
+    <button data-tab="ajustes"><span class="ic">⚙️</span>Ajustes</button>
+  </div>
+</nav>
+
+<div id="msg"></div>
+
+<script>
+const OWNER = 'reginaldoferreirarochall-a11y';
+const REPO = 'ressa-leads';
+const RAW = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/';
+const $ = (s) => document.querySelector(s);
+
+function msg(text, ok = true){
+  const m = $('#msg');
+  m.textContent = text;
+  m.className = ok ? 'ok' : 'err';
+  m.style.display = 'block';
+  clearTimeout(msg._t);
+  msg._t = setTimeout(() => { m.className = ''; m.style.display = 'none'; }, 6000);
+}
+function token(){ return localStorage.getItem('ressa_pat') || ''; }
+function headers(){
+  return { 'Authorization': 'Bearer ' + token(), 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+}
+async function gh(path, opts = {}){
+  const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + path, { ...opts, headers: headers() });
+  if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
+  return r.status === 204 ? null : r.json();
+}
+function needToken(){
+  if(!token()){ msg('Falta a chave — cole a chave na aba Início primeiro.', false); return true; }
+  return false;
+}
+async function dispatchWf(file, inputs, label){
+  if(needToken()) return;
+  try{
+    await gh('/actions/workflows/' + file + '/dispatches', {
+      method: 'POST', body: JSON.stringify({ ref: 'main', inputs })
+    });
+    msg('✅ Comando aceito! ' + label + ' — o robô já vai rodar.');
+  }catch(e){ msg('Não foi: ' + e.message + '. Confira a chave.', false); }
+}
+async function status(){
+  if(needToken()) return;
+  const el = $('#status');
+  el.textContent = 'Consultando…';
+  try{
+    const runs = await gh('/actions/runs?per_page=6');
+    const lines = (runs.workflow_runs || []).map(r => {
+      const quando = new Date(r.created_at).toLocaleString('pt-BR');
+      const estado = r.status === 'completed' ? (r.conclusion === 'success' ? '✅ deu certo' : '❌ ' + r.conclusion) : '⏳ ' + r.status;
+      return '• ' + r.name + ' — ' + estado + ' — ' + quando;
+    });
+    el.textContent = lines.join('\n') || 'Nenhuma execução ainda.';
+  }catch(e){ el.textContent = 'Não consegui consultar: ' + e.message; }
+}
+function extractLeads(){
+  const nicho = $('#exNicho').value.trim();
+  const regiao = $('#exRegiao').value.trim();
+  if(!nicho || !regiao){ msg('Preencha o nicho e a região.', false); return; }
+  return dispatchWf('extract.yml', { nicho, regiao, qtd: $('#exQtd').value }, 'Extrair "' + nicho + ' em ' + regiao + '"');
+}
+function kitGen(){
+  const n = Math.max(1, Math.min(20, parseInt($('#kitQtd').value || '5', 10)));
+  return dispatchWf('kit.yml', { qtd: String(n), incluir: '0' }, 'Gerar kit com ' + n + ' lojas');
+}
+function leadsGen(){ return dispatchWf('leads.yml', {}, 'Atualizar a lista de leads'); }
+function adminSend(){
+  let d = $('#admPhone').value.replace(/\D/g, '');
+  if(d.length === 10 || d.length === 11) d = '55' + d;
+  if(!(d.length === 12 || d.length === 13) || !d.startsWith('55')){
+    msg('Telefone inválido — digite DDD + número.', false); return;
+  }
+  const acao = $('#admAcao').value;
+  const nome = $('#admNome').value.trim();
+  const cidade = $('#admCidade').value.trim();
+  if(acao === 'add' && !nome){ msg('Pra adicionar, preencha o nome da loja.', false); return; }
+  return dispatchWf('admin.yml', { acao, telefone: d, nome, cidade }, 'Executar "' + acao + '" no lead ' + d);
+}
+
+// ---- Arquivos (mensagem e foto) via API de conteúdo ----
+function b64decodeText(b64){
+  const bytes = Uint8Array.from(atob(b64.replace(/\s/g, '')), c => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+function b64encodeText(txt){
+  const bytes = new TextEncoder().encode(txt);
+  let bin = '';
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+async function getFile(path){
+  const r = await gh('/contents/' + path);
+  return r;
+}
+async function cfgLoad(){
+  if(needToken()) return;
+  try{
+    const f = await getFile('config.json');
+    const cfg = JSON.parse(b64decodeText(f.content));
+    $('#cfgMsg').value = cfg.mensagem || '';
+    showFoto(cfg.foto || 'foto.jpg');
+    msg('Mensagem atual carregada.');
+  }catch(e){ msg('Não carregou: ' + e.message, false); }
+}
+async function cfgSave(){
+  if(needToken()) return;
+  const nova = $('#cfgMsg').value;
+  if(!nova.trim()){ msg('A mensagem está vazia.', false); return; }
+  try{
+    const f = await getFile('config.json');
+    const cfg = JSON.parse(b64decodeText(f.content));
+    cfg.mensagem = nova;
+    await gh('/contents/config.json', {
+      method: 'PUT',
+      body: JSON.stringify({ message: 'Mensagem da campanha atualizada pelo painel', content: b64encodeText(JSON.stringify(cfg, null, 2)), sha: f.sha })
+    });
+    msg('💾 Mensagem salva! Vale pro próximo kit.');
+  }catch(e){ msg('Não salvou: ' + e.message, false); }
+}
+function showFoto(path){
+  const img = $('#fotoAtual');
+  img.src = RAW + path + '?t=' + Date.now();
+  img.style.display = 'block';
+}
+async function fotoSend(){
+  if(needToken()) return;
+  const file = $('#fotoFile').files[0];
+  if(!file){ msg('Escolha uma foto primeiro.', false); return; }
+  if(file.size > 1000000){ msg('Foto maior que 1 MB — reduza e tente de novo.', false); return; }
+  try{
+    let sha = null;
+    try{ sha = (await getFile('foto.jpg')).sha; }catch(e){}
+    const dataUrl = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+    const b64 = String(dataUrl).split(',')[1];
+    await gh('/contents/foto.jpg', {
+      method: 'PUT',
+      body: JSON.stringify({ message: 'Foto da campanha atualizada pelo painel', content: b64, sha: sha || undefined })
+    });
+    showFoto('foto.jpg');
+    msg('🖼️ Foto atualizada! Vale pro próximo kit.');
+  }catch(e){ msg('Não enviou: ' + e.message, false); }
+}
+
+// Abas
+document.querySelectorAll('nav button[data-tab]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('nav button[data-tab]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.tabpage').forEach(p => p.classList.remove('active'));
+    $('#tab-' + b.dataset.tab).classList.add('active');
+    window.scrollTo({ top: 0 });
+    if(b.dataset.tab === 'mensagem' && token() && !$('#cfgMsg').value) cfgLoad();
+  });
+});
+
+document.querySelectorAll('[data-act]').forEach(b => {
+  b.addEventListener('click', () => {
+    const a = b.dataset.act;
+    if(a === 'token-save'){
+      const v = $('#token').value.trim();
+      if(!v){ msg('Cole a chave primeiro.', false); return; }
+      localStorage.setItem('ressa_pat', v);
+      msg('🔑 Chave salva neste aparelho!');
+      status();
+    }
+    if(a === 'token-clear'){
+      localStorage.removeItem('ressa_pat');
+      $('#token').value = '';
+      msg('Chave apagada deste aparelho.');
+    }
+    if(a === 'status')    status();
+    if(a === 'extract')   extractLeads();
+    if(a === 'kit-gen')   kitGen();
+    if(a === 'leads-gen') leadsGen();
+    if(a === 'adm-send')  adminSend();
+    if(a === 'cfg-load')  cfgLoad();
+    if(a === 'cfg-save')  cfgSave();
+    if(a === 'foto-send') fotoSend();
+  });
+});
+if(token()){ $('#token').value = token(); status(); showFoto('foto.jpg'); }
+</script>
+</body>
+</html>
