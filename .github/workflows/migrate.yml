@@ -1,0 +1,24 @@
+name: RESSA Migração do Banco
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ressa-migrate
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Rodar migração
+        run: node migrate.js

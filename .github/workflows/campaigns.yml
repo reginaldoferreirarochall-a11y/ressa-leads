@@ -1,0 +1,34 @@
+name: RESSA Campanhas
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ressa-campaigns
+  cancel-in-progress: false
+
+jobs:
+  campaigns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Gerar página de campanhas
+        run: node campaigns.js
+      - name: Publicar página
+        run: |
+          git config user.name "RESSA Campanhas"
+          git config user.email "actions@github.com"
+          git add docs/campaigns.html
+          git commit -m "Página de campanhas atualizada" || echo "sem mudanças"
+          git push

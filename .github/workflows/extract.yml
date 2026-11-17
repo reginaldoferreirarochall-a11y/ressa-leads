@@ -42,6 +42,9 @@ jobs:
         run: |
           if [ -f results.csv ]; then echo "Linhas:"; wc -l results.csv; echo "Primeiras linhas:"; head -n 5 results.csv; else echo "results.csv NAO foi gerado"; fi
       - name: Inserir leads novos no Neon
+        env:
+          EXTRACT_NICHO: ${{ inputs.nicho }}
+          EXTRACT_REGIAO: ${{ inputs.regiao }}
         run: |
           npm install --no-save @neondatabase/serverless
           node insert-leads.js results.csv "${{ inputs.qtd }}"
