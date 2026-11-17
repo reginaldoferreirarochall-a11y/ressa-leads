@@ -120,6 +120,20 @@
     </div>
 
     <div class="card">
+      <h2>📈 Relatórios</h2>
+      <button data-act="reports-gen">🔄 Atualizar relatórios</button>
+      <a class="btnlink alt" href="reports.html" target="_blank" rel="noopener">📂 Ver relatórios</a>
+      <p class="hint">Totais da base, por cidade, por categoria e por situação. Depois de atualizar, espere ~1 min e abra.</p>
+    </div>
+
+    <div class="card">
+      <h2>⬇️ Exportar a base (CSV)</h2>
+      <button data-act="export-gen">🔄 Gerar CSV atualizado</button>
+      <a class="btnlink alt" href="leads.csv" target="_blank" rel="noopener" download>⬇️ Baixar CSV</a>
+      <p class="hint">A base inteira numa planilha (abre no Excel e no Google Planilhas). Gere o CSV, espere ~1 min e baixe.</p>
+    </div>
+
+    <div class="card">
       <h2>📋 Kit de envio</h2>
       <input id="kitQtd" type="number" min="1" max="20" value="5">
       <button class="purple" data-act="kit-gen">📋 Gerar kit</button>
@@ -170,6 +184,12 @@
       <h2>🔑 Chave do painel</h2>
       <button class="danger" data-act="token-clear">🗑️ Apagar chave deste aparelho</button>
       <p class="hint">Apaga só a chave salva aqui — o projeto continua intacto.</p>
+    </div>
+    <div class="card">
+      <h2>🤖 Coletas automáticas</h2>
+      <p class="hint">Toda <b>segunda-feira, 9h</b>, o robô coleta sozinho nas 6 cidades da agenda (Itaquaquecetuba, Suzano, Mogi, Guarulhos, Ferraz e Poá) e enriquece a base. Começa <b>desligado</b>.</p>
+      <button class="lime" data-act="agenda-on">▶️ Ligar coletas automáticas</button>
+      <button data-act="agenda-off">⏸️ Pausar coletas automáticas</button>
     </div>
     <div class="card">
       <h2>ℹ️ Sobre</h2>
@@ -252,6 +272,24 @@ function kitGen(){
 }
 function leadsGen(){ return dispatchWf('leads.yml', {}, 'Atualizar a lista de leads'); }
 function campGen(){ return dispatchWf('campaigns.yml', {}, 'Atualizar as campanhas'); }
+function reportsGen(){ return dispatchWf('reports.yml', {}, 'Atualizar os relatórios'); }
+function exportGen(){ return dispatchWf('export.yml', {}, 'Gerar o CSV da base'); }
+async function setAgenda(on){
+  if(needToken()) return;
+  const val = on ? 'true' : 'false';
+  try{
+    let r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/variables/AGENDA_ENABLED', {
+      method: 'PUT', headers: headers(), body: JSON.stringify({ name: 'AGENDA_ENABLED', value: val })
+    });
+    if(r.status === 404){
+      r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/variables', {
+        method: 'POST', headers: headers(), body: JSON.stringify({ name: 'AGENDA_ENABLED', value: val })
+      });
+    }
+    if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
+    msg(on ? '✅ Coletas automáticas LIGADAS — toda segunda, 9h.' : '⏸️ Coletas automáticas PAUSADAS.');
+  }catch(e){ msg('Não foi: ' + e.message, false); }
+}
 function adminSend(){
   let d = $('#admPhone').value.replace(/\D/g, '');
   if(d.length === 10 || d.length === 11) d = '55' + d;
@@ -366,6 +404,10 @@ document.querySelectorAll('[data-act]').forEach(b => {
     if(a === 'kit-gen')   kitGen();
     if(a === 'leads-gen') leadsGen();
     if(a === 'camp-gen')  campGen();
+    if(a === 'reports-gen') reportsGen();
+    if(a === 'export-gen')  exportGen();
+    if(a === 'agenda-on')   setAgenda(true);
+    if(a === 'agenda-off')  setAgenda(false);
     if(a === 'adm-send')  adminSend();
     if(a === 'cfg-load')  cfgLoad();
     if(a === 'cfg-save')  cfgSave();
