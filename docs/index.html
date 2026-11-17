@@ -113,6 +113,13 @@
     </div>
 
     <div class="card">
+      <h2>📊 Campanhas de coleta</h2>
+      <button data-act="camp-gen">🔄 Atualizar campanhas</button>
+      <a class="btnlink alt" href="campaigns.html" target="_blank" rel="noopener">📂 Ver campanhas</a>
+      <p class="hint">Histórico de cada extração: o que foi buscado, quantos achou, quantos eram novos e quantos já existiam. Depois de atualizar, espere ~1 min e abra.</p>
+    </div>
+
+    <div class="card">
       <h2>📋 Kit de envio</h2>
       <input id="kitQtd" type="number" min="1" max="20" value="5">
       <button class="purple" data-act="kit-gen">📋 Gerar kit</button>
@@ -244,6 +251,7 @@ function kitGen(){
   return dispatchWf('kit.yml', { qtd: String(n), incluir: '0' }, 'Gerar kit com ' + n + ' lojas');
 }
 function leadsGen(){ return dispatchWf('leads.yml', {}, 'Atualizar a lista de leads'); }
+function campGen(){ return dispatchWf('campaigns.yml', {}, 'Atualizar as campanhas'); }
 function adminSend(){
   let d = $('#admPhone').value.replace(/\D/g, '');
   if(d.length === 10 || d.length === 11) d = '55' + d;
@@ -357,6 +365,7 @@ document.querySelectorAll('[data-act]').forEach(b => {
     if(a === 'extract')   extractLeads();
     if(a === 'kit-gen')   kitGen();
     if(a === 'leads-gen') leadsGen();
+    if(a === 'camp-gen')  campGen();
     if(a === 'adm-send')  adminSend();
     if(a === 'cfg-load')  cfgLoad();
     if(a === 'cfg-save')  cfgSave();
