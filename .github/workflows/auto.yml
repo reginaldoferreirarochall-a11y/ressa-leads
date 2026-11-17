@@ -1,0 +1,28 @@
+name: RESSA Coletas Automáticas
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Segundas, 12:00 UTC = 09:00 em São Paulo — só roda se AGENDA_ENABLED = 'true'
+    - cron: '0 12 * * 1'
+
+concurrency:
+  group: ressa-extract
+  cancel-in-progress: false
+
+jobs:
+  auto:
+    if: github.event_name == 'workflow_dispatch' || vars.AGENDA_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Rodar a agenda de coletas
+        run: node auto.js
