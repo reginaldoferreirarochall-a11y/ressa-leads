@@ -1,10 +1,11 @@
-// Gera a PÁGINA DE LEADS (docs/leads.html) a partir do Neon — 100% código.
-// Mostra os contadores por status e a lista completa de lojas capturadas.
+// Gera a PÁGINA DE LEADS (docs/leads.html) a partir do Neon — Etapa 2 (base rica).
+// Mostra contadores por status e os cartões completos de cada empresa.
 import fs from 'node:fs';
 import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
-const leads = await sql`select id, nome, telefone, cidade, status, sent_at, created_at
+const leads = await sql`select id, nome, telefone, cidade, endereco, site, avaliacao, avaliacoes,
+  categoria, email, maps_link, status, created_at
   from leads order by status, created_at`;
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -16,26 +17,39 @@ const counts = {};
 for (const l of leads) counts[l.status] = (counts[l.status] || 0) + 1;
 const summary = Object.entries(counts).map(([s, c]) => `${LABEL[s] || s}: <b>${c}</b>`).join(' · ');
 
-const cards = leads.map((l) => `<div class="card">
+const cards = leads.map((l) => {
+  const bits = [];
+  if (l.avaliacao) bits.push(`⭐ ${esc(l.avaliacao)}${l.avaliacoes ? ` (${esc(l.avaliacoes)} avaliações)` : ''}`);
+  if (l.categoria) bits.push(esc(l.categoria));
+  if (l.endereco) bits.push('📍 ' + esc(l.endereco));
+  if (l.email) bits.push('✉️ ' + esc(l.email));
+  const links = [`<a class="btn" href="https://wa.me/${l.telefone}" target="_blank" rel="noopener">💬 WhatsApp</a>`];
+  if (l.site) links.push(`<a class="btn alt" href="${esc(l.site.startsWith('http') ? l.site : 'https://' + l.site)}" target="_blank" rel="noopener">🌐 Site</a>`);
+  if (l.maps_link) links.push(`<a class="btn alt" href="${esc(l.maps_link)}" target="_blank" rel="noopener">🗺️ Maps</a>`);
+  return `<div class="card">
   <h2>${esc(l.nome)}</h2>
   <p class="meta">${esc(l.cidade || '')} · ${pretty(l.telefone)} · ${LABEL[l.status] || esc(l.status)}</p>
-  <a class="btn" href="https://wa.me/${l.telefone}" target="_blank" rel="noopener">💬 Abrir conversa</a>
-</div>`).join('\n');
+  ${bits.length ? `<p class="meta">${bits.join('<br>')}</p>` : ''}
+  <div class="row">${links.join('')}</div>
+</div>`;
+}).join('\n');
 
 const quando = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 const doc = `<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leads capturados — RESSA</title>
+<title>Leads capturados — RESSA Leads</title>
 <style>
  body{margin:0;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:#0a0a0e;color:#f4f4ec}
  header{padding:20px 16px 4px;text-align:center} h1{margin:0;font-size:23px}
  header p{opacity:.85;font-size:14px;line-height:1.6}
  main{max-width:520px;margin:0 auto;padding:12px}
  .card{background:#17171e;border:1px solid #2a2a33;border-radius:16px;padding:14px 16px;margin-bottom:12px}
- .card h2{margin:0 0 4px;font-size:17px} .meta{opacity:.85;margin:0;font-size:14px;line-height:1.5}
- .btn{display:block;text-align:center;background:#c9f24e;color:#0c0c10;font-weight:800;font-size:15px;
-   padding:12px;border-radius:12px;text-decoration:none;margin-top:10px}
+ .card h2{margin:0 0 4px;font-size:17px} .meta{opacity:.85;margin:0 0 6px;font-size:14px;line-height:1.55}
+ .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+ .btn{flex:1;text-align:center;background:#c9f24e;color:#0c0c10;font-weight:800;font-size:15px;
+   padding:12px;border-radius:12px;text-decoration:none;min-width:100px}
+ .btn.alt{background:#1f1f27;color:#f4f4ec;border:1px solid #2a2a33}
 </style></head><body>
 <header><h1>👀 Leads capturados</h1>
 <p>Total: <b>${leads.length}</b> · ${summary}<br>Atualizado em ${quando}</p></header>
