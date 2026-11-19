@@ -4,8 +4,9 @@ import fs from 'node:fs';
 import { neon } from '@neondatabase/serverless';
 
 const sql = neon(process.env.DATABASE_URL);
+await sql`alter table leads add column if not exists lista text`;
 const leads = await sql`select id, nome, telefone, cidade, endereco, site, avaliacao, avaliacoes,
-  categoria, email, maps_link, status, created_at
+  categoria, email, maps_link, status, lista, created_at
   from leads order by status, created_at`;
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -62,6 +63,6 @@ const doc = `<!DOCTYPE html>
 
 fs.mkdirSync('docs', { recursive: true });
 fs.writeFileSync('docs/leads.html', doc);
-const dados = leads.map(l => ({ id: l.id, nome: l.nome, telefone: l.telefone, cidade: l.cidade, status: l.status }));
+const dados = leads.map(l => ({ id: l.id, nome: l.nome, telefone: l.telefone, cidade: l.cidade, status: l.status, lista: l.lista || null }));
 fs.writeFileSync('docs/leads.json', JSON.stringify(dados));
 console.log(`Página de leads publicada com ${leads.length} registros.`);
