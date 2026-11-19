@@ -62,4 +62,6 @@ const doc = `<!DOCTYPE html>
 
 fs.mkdirSync('docs', { recursive: true });
 fs.writeFileSync('docs/leads.html', doc);
+const dados = leads.map(l => ({ id: l.id, nome: l.nome, telefone: l.telefone, cidade: l.cidade, status: l.status }));
+fs.writeFileSync('docs/leads.json', JSON.stringify(dados));
 console.log(`Página de leads publicada com ${leads.length} registros.`);
