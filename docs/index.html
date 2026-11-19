@@ -96,7 +96,7 @@
 
     <button class="main big" data-goto="extrair"><span class="ic">🔍</span><span><span class="t">Buscar lojas novas</span><span class="s">Acho vidraçarias no Google Maps pra você</span></span></button>
     <button class="gold big" data-goto="leads"><span class="ic">📋</span><span><span class="t">Montar meu kit de envio</span><span class="s">Lojas + sua mensagem + sua foto, prontos pra enviar</span></span></button>
-    <a class="btnlink" href="leads.html" target="_blank" rel="noopener">👀 Ver minhas lojas</a>
+    <button class="soft big" data-goto="leads"><span class="ic">👀</span><span><span class="t">Ver minhas lojas</span><span class="s">Sua lista de clientes, aqui dentro do painel</span></span></button>
 
     <div class="card">
       <h2>🕐 O que aconteceu por aqui</h2>
@@ -129,9 +129,10 @@
   <section class="tabpage" id="tab-leads">
     <div class="card">
       <h2>👀 Minhas lojas</h2>
-      <p class="hint">Todas as lojas que você já capturou, com telefone e cidade.</p>
+      <p class="hint">Todas as lojas que você já capturou, com telefone e cidade — <b>aqui dentro</b>, sem sair do painel. Depois de atualizar, espera ~1 min e volta nesta aba.</p>
       <button class="main" data-act="leads-gen">🔄 Atualizar minha lista</button>
-      <a class="btnlink" href="leads.html" target="_blank" rel="noopener">📂 Abrir a lista</a>
+      <iframe src="leads.html" title="Minhas lojas" style="width:100%;height:65vh;border:1.5px solid var(--line);border-radius:14px;background:#fff;"></iframe>
+      <a class="btnlink" href="leads.html" target="_blank" rel="noopener">📂 Abrir em tela cheia</a>
     </div>
 
     <div class="card">
@@ -140,7 +141,8 @@
       <label for="kitQtd">Quantas lojas no kit?</label>
       <input id="kitQtd" type="number" min="1" max="20" value="5">
       <button class="gold" data-act="kit-gen">📋 Montar o kit</button>
-      <a class="btnlink" href="kit.html" target="_blank" rel="noopener">📂 Abrir o kit</a>
+      <iframe src="kit.html" title="Kit de envio" style="width:100%;height:65vh;border:1.5px solid var(--line);border-radius:14px;background:#fff;"></iframe>
+      <a class="btnlink" href="kit.html" target="_blank" rel="noopener">📂 Abrir o kit em tela cheia</a>
     </div>
 
     <details>
