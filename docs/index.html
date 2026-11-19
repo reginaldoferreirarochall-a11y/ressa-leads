@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>RESSA — Prospecção</title>
+<title>RESSA — Extrator de Leads</title>
 <style>
   :root{
     --bg:#0a0a0b; --surface:#141417; --surface2:#1b1b1f; --line:#26262b; --line2:#3a3a41;
-    --txt:#f5f5f4; --mut:#9c9ca3; --ink:#0a0a0b; --ok:#4ade80; --err:#ff9c9c;
+    --txt:#f5f5f4; --mut:#9c9ca3; --ink:#0a0a0b; --ok:#4ade80;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body{margin:0; font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:var(--bg); color:var(--txt);}
@@ -21,41 +21,31 @@
   h1{font-size:30px; font-weight:800; letter-spacing:-.6px; margin:10px 2px 4px; line-height:1.15;}
   .sub{color:var(--mut); font-size:15px; margin:0 2px 8px; line-height:1.55;}
   .bloco{background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:20px; margin:16px 0;}
-  .bloco > h2{margin:0 0 4px; font-size:21px; font-weight:800; letter-spacing:.4px;}
-  .bloco > h2 .n{color:var(--mut); font-size:14px; letter-spacing:2px; display:block; margin-bottom:4px;}
+  .bloco > h2{margin:0 0 4px; font-size:20px; font-weight:800;}
   .hint{font-size:14px; color:var(--mut); line-height:1.6; margin:4px 0 10px;}
   label{display:block; font-size:13px; letter-spacing:.4px; font-weight:700; color:var(--mut); text-transform:uppercase; margin:14px 0 2px;}
-  input, select, textarea{width:100%; min-height:54px; border-radius:16px; border:1px solid var(--line2);
+  input, select{width:100%; min-height:54px; border-radius:16px; border:1px solid var(--line2);
     background:#0e0e10; color:var(--txt); font-size:16.5px; padding:13px 16px; margin:4px 0 6px; font-family:inherit;}
-  textarea{min-height:150px; line-height:1.55; resize:vertical; border-radius:18px;}
-  input::placeholder, textarea::placeholder{color:#5c5c64;}
+  input::placeholder{color:#5c5c64;}
   button{width:100%; min-height:56px; border-radius:999px; font-size:16.5px; font-weight:700;
     background:transparent; color:var(--txt); border:1px solid var(--line2); cursor:pointer; margin:6px 0; padding:12px 20px; font-family:inherit;}
   button:active{transform:scale(.98);}
   button.main{background:#fff; color:var(--ink); border-color:#fff;}
   button.soft{background:var(--surface2); border-color:var(--surface2);}
-  button.small{min-height:48px; font-size:15px;}
-  .resumo{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 2px;}
+  #andamento{display:none; text-align:center; padding:16px 0 6px;}
+  #andamento .bola{width:14px; height:14px; border-radius:50%; background:#fff; margin:0 auto 12px;
+    animation:pulsa 1s ease-in-out infinite;}
+  @keyframes pulsa{0%,100%{transform:scale(1); opacity:.5} 50%{transform:scale(1.5); opacity:1}}
+  #andamento p{color:var(--mut); font-size:14.5px; margin:0; line-height:1.6;}
+  .resumo{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 4px;}
   .chip{border:1px solid var(--line2); border-radius:999px; padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--mut);}
   .chip b{color:var(--txt);}
-  .catalogo{width:100%; border-radius:18px; border:1px solid var(--line); margin:8px 0 4px;}
-  .loja{border:1px solid var(--line); background:var(--surface2); border-radius:18px; padding:16px; margin:10px 0;}
-  .loja .pos{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700;}
-  .loja h3{margin:6px 0 2px; font-size:18.5px; font-weight:800;}
-  .loja p{margin:0; color:var(--mut); font-size:14.5px;}
-  .loja .pergunta{display:none; margin-top:10px;}
-  .loja .pergunta p{color:var(--txt); font-weight:700; margin-bottom:8px;}
-  .loja .pergunta .rowbtn{display:flex; gap:8px;}
-  .loja .pergunta button{margin:0;}
-  .contato{display:flex; align-items:center; gap:10px; padding:13px 2px; border-bottom:1px solid var(--line);}
+  .contato{display:flex; align-items:center; gap:10px; padding:13px 2px; border-bottom:1px solid var(--line); cursor:pointer;}
   .contato:last-child{border-bottom:0;}
   .contato .info{flex:1; min-width:0;}
   .contato .info b{display:block; font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .contato .info span{font-size:13px; color:var(--mut);}
-  .tag{flex:0 0 auto; font-size:12px; font-weight:700; padding:6px 11px; border-radius:999px; border:1px solid var(--line2); color:var(--mut);}
-  .tag.espera{color:var(--txt); border-color:var(--txt);}
-  .tag.bloq{color:var(--ink); background:var(--mut); border-color:var(--mut);}
-  .contato.bloqueado{opacity:.45;}
+  .contato .info span{font-size:13.5px; color:var(--mut);}
+  .contato .zap{flex:0 0 auto; font-size:14px; font-weight:700;}
   .vazio{color:var(--mut); font-size:14.5px; text-align:center; padding:14px 0 6px; line-height:1.6;}
   #msg{display:none; position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:60;
     max-width:92vw; padding:14px 20px; border-radius:999px; font-size:15px; font-weight:600; box-shadow:0 12px 34px rgba(0,0,0,.6);}
@@ -73,13 +63,11 @@
     <span class="online"><span class="dot"></span>Online</span>
   </div>
 
-  <h1>Prospecção simples</h1>
-  <p class="sub">Uma página só: gere os contatos, envie na sequência e quem já recebeu fica bloqueado.</p>
+  <h1>Extrator de leads</h1>
+  <p class="sub">Digite o nicho e a região. Eu busco as empresas no Google Maps e monto sua lista de contatos com WhatsApp.</p>
 
-  <!-- LISTA -->
-  <section class="bloco" id="bloco-lista">
-    <h2><span class="n">PARTE 1</span>LISTA</h2>
-    <p class="hint">Escolha o nicho e a região. Os contatos com WhatsApp caem na base, sem repetir quem já está lá.</p>
+  <section class="bloco">
+    <h2>Extrair contatos</h2>
     <label for="exNicho">Nicho</label>
     <input id="exNicho" type="text" placeholder="Ex.: vidraçaria" autocomplete="off">
     <label for="exRegiao">Região</label>
@@ -91,43 +79,31 @@
       <option value="40" selected>Até 40 contatos</option>
       <option value="60">Até 60 contatos</option>
     </select>
-    <button class="main" id="btnGerar">Gerar leads</button>
-    <button class="soft" id="btnAtualizar">Atualizar a lista</button>
+    <button class="main" id="btnExtrair">Extrair contatos</button>
+    <div id="andamento">
+      <div class="bola"></div>
+      <p>Buscando no Google Maps...<br>leva uns 2 minutos. Pode deixar essa tela aberta.</p>
+    </div>
+  </section>
+
+  <section class="bloco">
+    <h2>Seus contatos</h2>
     <div class="resumo" id="resumo"></div>
-  </section>
-
-  <!-- KIT -->
-  <section class="bloco" id="bloco-kit">
-    <h2><span class="n">PARTE 2</span>KIT</h2>
-    <p class="hint">Sua imagem é a do catálogo. Segure nela pra salvar e anexe em cada conversa. Depois é só seguir a sequência: toque em <b>Enviar</b>, mande no WhatsApp e confirme — o contato fica <b>bloqueado</b> e sai da fila.</p>
-    <img class="catalogo" src="https://raw.githubusercontent.com/reginaldoferreirarochall-a11y/ressa-leads/main/foto.jpg" alt="Imagem do catálogo">
-    <div id="fila"></div>
-  </section>
-
-  <!-- CONTATOS -->
-  <section class="bloco" id="bloco-contatos">
-    <h2><span class="n">PARTE 3</span>CONTATOS</h2>
-    <p class="hint">Sua base inteira. Quem já recebeu aparece <b>bloqueado</b> — nunca entra no kit de novo.</p>
     <input id="busca" type="text" placeholder="Buscar por nome ou cidade..." autocomplete="off">
     <div id="contatos"></div>
-  </section>
-
-  <!-- MENSAGEM -->
-  <section class="bloco" id="bloco-mensagem">
-    <h2><span class="n">PARTE 4</span>MENSAGEM</h2>
-    <p class="hint">Digite a mensagem do seu jeito. Ela já vai preenchida quando você toca em Enviar no kit.</p>
-    <textarea id="cfgMsg" placeholder="Sua mensagem..."></textarea>
-    <button class="main" id="btnSalvarMsg">Salvar mensagem</button>
+    <button class="soft" id="btnCsv">Baixar a lista (CSV)</button>
+    <button id="btnAtualizar">Atualizar a lista</button>
+    <p class="hint">Toque num contato pra copiar o número. O CSV abre no Excel e no Google Planilhas.</p>
   </section>
 
   <div class="bloco" id="chaveBox">
-    <h2 style="font-size:18px; margin:0 0 4px;">Primeira vez neste aparelho?</h2>
+    <h2 style="font-size:18px;">Primeira vez neste aparelho?</h2>
     <p class="hint">Cole a chave uma única vez. Depois ela some e a página só funciona.</p>
     <input id="token" type="password" placeholder="Cole a chave aqui" autocomplete="off">
     <button class="main" id="btnChave">Salvar e pronto</button>
   </div>
 
-  <p class="rodape">RESSA Leads — os contatos ficam guardados na nuvem<br>e os robôs trabalham com o PC desligado.</p>
+  <p class="rodape">RESSA Leads — os contatos ficam guardados na nuvem<br>e a extração roda com o PC desligado.</p>
 </main>
 
 <div id="msg"></div>
@@ -135,11 +111,9 @@
 <script>
 const OWNER = 'reginaldoferreirarochall-a11y';
 const REPO = 'ressa-leads';
-const RAW = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/';
 const $ = (s) => document.querySelector(s);
 
 let LEADS = [];
-let enviadosLocal = new Set(JSON.parse(localStorage.getItem('ressa_enviados') || '[]'));
 
 function msg(text, ok = true){
   const m = $('#msg');
@@ -153,194 +127,105 @@ function token(){ return localStorage.getItem('ressa_pat') || ''; }
 function headers(){
   return { 'Authorization': 'Bearer ' + token(), 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
 }
-async function gh(path, opts = {}){
-  const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + path, { ...opts, headers: headers() });
-  if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
-  return r.status === 204 ? null : r.json();
-}
-async function dispatchWf(file, inputs){
-  const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/workflows/' + file + '/dispatches', {
-    method: 'POST', headers: headers(), body: JSON.stringify({ ref: 'main', inputs })
-  });
-  if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
-}
 function pretty(t){
   t = String(t || '');
   return t.length === 13 ? '(' + t.slice(2,4) + ') ' + t.slice(4,9) + '-' + t.slice(9)
     : t.length === 12 ? '(' + t.slice(2,4) + ') ' + t.slice(4,8) + '-' + t.slice(8) : t;
 }
-function bloqueado(l){
-  return enviadosLocal.has(String(l.id)) || ['sent','replied','links_sent'].includes(l.status);
-}
-function naFila(l){
-  return !bloqueado(l) && ['queued','kit'].includes(l.status);
-}
 
-// ---------- Dados ----------
 async function carregar(){
   try{
     const r = await fetch('leads.json?t=' + Date.now());
     if(!r.ok) throw new Error('lista indisponível');
     LEADS = await r.json();
-  }catch(e){ LEADS = []; }
+  }catch(e){ /* mantém o que já tinha */ }
   render();
 }
 function render(){
-  const total = LEADS.length;
-  const fila = LEADS.filter(naFila).length;
-  const env = LEADS.filter(bloqueado).length;
+  const cidades = new Set(LEADS.map(l => l.cidade).filter(Boolean)).size;
   $('#resumo').innerHTML =
-    '<span class="chip"><b>' + total + '</b> contatos</span>' +
-    '<span class="chip"><b>' + fila + '</b> esperando envio</span>' +
-    '<span class="chip"><b>' + env + '</b> já enviados (bloqueados)</span>';
-  renderKit();
-  renderContatos();
-}
-
-// ---------- KIT ----------
-function renderKit(){
-  const fila = LEADS.filter(naFila).slice(0, 10);
-  const el = $('#fila');
-  if(!fila.length){
-    el.innerHTML = '<p class="vazio">Nenhum contato esperando.<br>Gere leads na LISTA ou libere contatos travados.</p>';
-    return;
-  }
-  el.innerHTML = fila.map((l, i) =>
-    '<div class="loja" id="loja-' + l.id + '">' +
-      '<span class="pos">' + (i + 1) + ' DE ' + fila.length + ' NA SEQUÊNCIA</span>' +
-      '<h3>' + l.nome + '</h3>' +
-      '<p>' + (l.cidade || '') + ' · ' + pretty(l.telefone) + '</p>' +
-      '<button class="main" onclick="abrirEnvio(' + l.id + ')">Enviar mensagem</button>' +
-      '<div class="pergunta" id="perg-' + l.id + '">' +
-        '<p>Você enviou pra essa loja?</p>' +
-        '<div class="rowbtn">' +
-          '<button class="main small" onclick="confirmarEnvio(' + l.id + ')">Sim, já enviei</button>' +
-          '<button class="small" onclick="voltarEnvio(' + l.id + ')">Ainda não</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>'
-  ).join('');
-}
-function abrirEnvio(id){
-  const l = LEADS.find(x => String(x.id) === String(id));
-  if(!l) return;
-  const texto = $('#cfgMsg').value || '';
-  window.open('https://wa.me/' + l.telefone + '?text=' + encodeURIComponent(texto), '_blank');
-  const p = $('#perg-' + id);
-  if(p) p.style.display = 'block';
-}
-function voltarEnvio(id){
-  const p = $('#perg-' + id);
-  if(p) p.style.display = 'none';
-}
-async function confirmarEnvio(id){
-  const l = LEADS.find(x => String(x.id) === String(id));
-  enviadosLocal.add(String(id));
-  localStorage.setItem('ressa_enviados', JSON.stringify([...enviadosLocal]));
-  render();
-  msg('Bloqueado: ' + (l ? l.nome : 'loja') + ' não aparece mais na fila.');
-  if(l && token()){
-    try{ await dispatchWf('admin.yml', { acao: 'sent', telefone: String(l.telefone), nome: '', cidade: '' }); }
-    catch(e){ /* o bloqueio local já vale neste aparelho */ }
-  }
-}
-
-// ---------- CONTATOS ----------
-function renderContatos(){
+    '<span class="chip"><b>' + LEADS.length + '</b> contatos</span>' +
+    '<span class="chip"><b>' + cidades + '</b> cidades</span>';
   const q = ($('#busca').value || '').toLowerCase();
   const lista = LEADS.filter(l => !q || (l.nome || '').toLowerCase().includes(q) || (l.cidade || '').toLowerCase().includes(q));
   const el = $('#contatos');
-  if(!lista.length){ el.innerHTML = '<p class="vazio">Nenhum contato encontrado.</p>'; return; }
-  el.innerHTML = lista.map(l => {
-    const b = bloqueado(l);
-    const tag = b ? '<span class="tag bloq">Já enviado · bloqueado</span>'
-      : l.status === 'hold' ? '<span class="tag">Travado</span>'
-      : l.status === 'invalid' ? '<span class="tag">Sem WhatsApp</span>'
-      : '<span class="tag espera">Esperando</span>';
-    return '<div class="contato' + (b ? ' bloqueado' : '') + '">' +
-      '<div class="info"><b>' + l.nome + '</b><span>' + (l.cidade || '') + ' · ' + pretty(l.telefone) + '</span></div>' +
-      tag + '</div>';
-  }).join('');
+  if(!lista.length){ el.innerHTML = '<p class="vazio">Nenhum contato ainda.<br>Extraia o primeiro nicho aqui em cima.</p>'; return; }
+  el.innerHTML = lista.map(l =>
+    '<div class="contato" onclick="copiar(\'' + l.telefone + '\')">' +
+      '<div class="info"><b>' + l.nome + '</b><span>' + (l.cidade || '') + '</span></div>' +
+      '<span class="zap">' + pretty(l.telefone) + '</span>' +
+    '</div>'
+  ).join('');
+}
+function copiar(tel){
+  if(navigator.clipboard) navigator.clipboard.writeText(String(tel)).catch(() => {});
+  msg('Número copiado: ' + pretty(tel));
 }
 
-// ---------- LISTA (gerar) ----------
-async function gerar(){
+async function extrair(){
   const nicho = $('#exNicho').value.trim();
   const regiao = $('#exRegiao').value.trim();
   if(!nicho || !regiao){ msg('Preencha o nicho e a região.', false); return; }
   if(!token()){ mostrarChave(); msg('Falta só colar a chave uma vez, aqui embaixo.', false); return; }
+  const btn = $('#btnExtrair');
+  btn.disabled = true;
+  $('#andamento').style.display = 'block';
   try{
-    await dispatchWf('extract.yml', { nicho, regiao, qtd: $('#exQtd').value });
-    msg('Buscando "' + nicho + ' em ' + regiao + '"... leva uns 2 minutos.');
-    let tentativas = 0;
+    const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/workflows/extract.yml/dispatches', {
+      method: 'POST', headers: headers(), body: JSON.stringify({ ref: 'main', inputs: { nicho, regiao, qtd: $('#exQtd').value } })
+    });
+    if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
     const antes = LEADS.length;
+    let tentativas = 0;
     const timer = setInterval(async () => {
       tentativas++;
       await carregar();
-      if(LEADS.length > antes || tentativas >= 8){
+      if(LEADS.length > antes){
         clearInterval(timer);
-        if(LEADS.length > antes) msg('Chegaram ' + (LEADS.length - antes) + ' contatos novos!');
+        $('#andamento').style.display = 'none';
+        btn.disabled = false;
+        msg('Pronto! ' + (LEADS.length - antes) + ' contatos novos na lista.');
+      } else if(tentativas >= 10){
+        clearInterval(timer);
+        $('#andamento').style.display = 'none';
+        btn.disabled = false;
+        msg('A busca terminou — se a lista não mudou, eram contatos repetidos.');
       }
     }, 30000);
-  }catch(e){ msg('Não foi: ' + e.message, false); }
+  }catch(e){
+    $('#andamento').style.display = 'none';
+    btn.disabled = false;
+    msg('Não foi: ' + e.message, false);
+  }
 }
 
-// ---------- MENSAGEM ----------
-function b64decodeText(b64){
-  const bytes = Uint8Array.from(atob(b64.replace(/\s/g, '')), c => c.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
-}
-function b64encodeText(txt){
-  const bytes = new TextEncoder().encode(txt);
-  let bin = '';
-  bytes.forEach(b => { bin += String.fromCharCode(b); });
-  return btoa(bin);
-}
-async function carregarMensagem(){
-  const local = localStorage.getItem('ressa_msg');
-  if(local){ $('#cfgMsg').value = local; return; }
-  try{
-    const r = await fetch(RAW + 'config.json?t=' + Date.now());
-    const cfg = await r.json();
-    $('#cfgMsg').value = cfg.mensagem || '';
-  }catch(e){}
-}
-async function salvarMensagem(){
-  const nova = $('#cfgMsg').value;
-  if(!nova.trim()){ msg('A mensagem está vazia.', false); return; }
-  localStorage.setItem('ressa_msg', nova);
-  if(!token()){ msg('Mensagem salva neste aparelho.'); return; }
-  try{
-    const f = await gh('/contents/config.json');
-    const cfg = JSON.parse(b64decodeText(f.content));
-    cfg.mensagem = nova;
-    await gh('/contents/config.json', {
-      method: 'PUT',
-      body: JSON.stringify({ message: 'Mensagem atualizada pela página', content: b64encodeText(JSON.stringify(cfg, null, 2)), sha: f.sha })
-    });
-    msg('Mensagem salva!');
-  }catch(e){ msg('Salva neste aparelho (a nuvem não respondeu).'); }
+function baixarCsv(){
+  if(!LEADS.length){ msg('A lista está vazia.', false); return; }
+  const q = (v) => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const csv = '﻿nome,telefone,cidade\n' + LEADS.map(l => [l.nome, l.telefone, l.cidade].map(q).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'contatos.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  msg('Lista baixada: ' + LEADS.length + ' contatos.');
 }
 
-// ---------- Chave (só aparece se faltar) ----------
 function mostrarChave(){ $('#chaveBox').style.display = 'block'; }
 function salvarChave(){
   const v = $('#token').value.trim();
   if(!v){ msg('Cole a chave primeiro.', false); return; }
   localStorage.setItem('ressa_pat', v);
   $('#chaveBox').style.display = 'none';
-  msg('Pronto! Agora é só usar.');
+  msg('Pronto! Agora é só extrair.');
 }
 
-// ---------- Ligações ----------
-$('#btnGerar').addEventListener('click', gerar);
+$('#btnExtrair').addEventListener('click', extrair);
 $('#btnAtualizar').addEventListener('click', async () => { await carregar(); msg('Lista atualizada.'); });
-$('#btnSalvarMsg').addEventListener('click', salvarMensagem);
+$('#btnCsv').addEventListener('click', baixarCsv);
 $('#btnChave').addEventListener('click', salvarChave);
-$('#busca').addEventListener('input', renderContatos);
-$('#cfgMsg').addEventListener('input', () => localStorage.setItem('ressa_msg', $('#cfgMsg').value));
+$('#busca').addEventListener('input', render);
 if(!token()) mostrarChave();
-carregarMensagem();
 carregar();
 </script>
 </body>
