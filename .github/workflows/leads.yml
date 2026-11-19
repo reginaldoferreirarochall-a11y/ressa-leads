@@ -29,6 +29,6 @@ jobs:
         run: |
           git config user.name "RESSA Leads"
           git config user.email "actions@github.com"
-          git add docs/leads.html
+          git add docs/leads.html docs/leads.json
           git commit -m "Lista de leads atualizada" || echo "sem mudanças"
           git push
