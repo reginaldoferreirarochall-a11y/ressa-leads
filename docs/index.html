@@ -222,7 +222,7 @@ function renderKit(){
   ).join('');
 }
 function abrirEnvio(id){
-  const l = LEADS.find(x => x.id === id);
+  const l = LEADS.find(x => String(x.id) === String(id));
   if(!l) return;
   const texto = $('#cfgMsg').value || '';
   window.open('https://wa.me/' + l.telefone + '?text=' + encodeURIComponent(texto), '_blank');
@@ -234,7 +234,7 @@ function voltarEnvio(id){
   if(p) p.style.display = 'none';
 }
 async function confirmarEnvio(id){
-  const l = LEADS.find(x => x.id === id);
+  const l = LEADS.find(x => String(x.id) === String(id));
   enviadosLocal.add(String(id));
   localStorage.setItem('ressa_enviados', JSON.stringify([...enviadosLocal]));
   render();
