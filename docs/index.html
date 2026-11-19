@@ -3,278 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>RESSA Leads</title>
+<title>RESSA — Prospecção</title>
 <style>
   :root{
     --bg:#0a0a0b; --surface:#141417; --surface2:#1b1b1f; --line:#26262b; --line2:#3a3a41;
-    --txt:#f5f5f4; --mut:#9c9ca3; --ink:#0a0a0b; --err:#ff9c9c;
+    --txt:#f5f5f4; --mut:#9c9ca3; --ink:#0a0a0b; --ok:#4ade80; --err:#ff9c9c;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  body{margin:0; font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
-    background:var(--bg); color:var(--txt);}
-  .glow{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;}
-  .glow::before{content:''; position:absolute; width:420px; height:420px; border-radius:50%;
-    right:-160px; top:-180px; filter:blur(90px); opacity:.14;
-    background:radial-gradient(circle, #ffffff, transparent 65%);}
-  main{position:relative; z-index:1; max-width:560px; margin:0 auto; padding:16px 14px 40px;}
-
-  /* Topo */
-  .topbar{display:flex; align-items:center; gap:10px; padding:6px 2px 14px;}
-  .logo{background:#fff; color:var(--ink); font-weight:800; font-size:13px; letter-spacing:.6px;
-    padding:9px 16px; border-radius:999px;}
+  body{margin:0; font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:var(--bg); color:var(--txt);}
+  main{max-width:560px; margin:0 auto; padding:18px 14px 48px;}
+  .topbar{display:flex; align-items:center; gap:10px; padding:4px 2px 8px;}
+  .logo{background:#fff; color:var(--ink); font-weight:800; font-size:13px; letter-spacing:.6px; padding:9px 16px; border-radius:999px;}
   .topbar .sp{flex:1;}
-  .online{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600;
-    color:var(--mut); border:1px solid var(--line2); padding:8px 14px; border-radius:999px;}
-  .online .dot{width:8px; height:8px; border-radius:50%; background:#4ade80;}
-  .avatar{width:38px; height:38px; border-radius:50%; background:var(--surface2);
-    border:1px solid var(--line2); display:flex; align-items:center; justify-content:center; font-size:18px;}
-
-  /* Abas em pílula */
-  .tabs{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; scrollbar-width:none;}
-  .tabs::-webkit-scrollbar{display:none;}
-  .tabs button{flex:0 0 auto; width:auto; min-height:44px; padding:10px 18px; border-radius:999px;
-    background:transparent; color:var(--txt); border:1px solid var(--line2);
-    font-size:14.5px; font-weight:600; cursor:pointer; margin:0;}
-  .tabs button.active{background:#fff; color:var(--ink); border-color:#fff;}
-
-  /* Cartões */
-  .hero{background:var(--surface); border:1px solid var(--line); border-radius:24px;
-    padding:26px 22px; margin-bottom:14px; overflow:hidden; position:relative;}
-  .hero::after{content:''; position:absolute; width:300px; height:300px; border-radius:50%;
-    right:-110px; bottom:-150px; filter:blur(60px); opacity:.10; background:#fff;}
-  .hero .kicker{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700; margin:0 0 10px;}
-  .hero h1{margin:0; font-size:31px; line-height:1.16; font-weight:800; letter-spacing:-.6px;}
-  .hero p{margin:12px 0 0; color:var(--mut); font-size:15px; line-height:1.6; max-width:42ch;}
-  .card{background:var(--surface); border:1px solid var(--line); border-radius:24px;
-    padding:20px; margin-bottom:14px;}
-  .card h2{margin:0 0 6px; font-size:18px; font-weight:800; letter-spacing:-.2px;}
-  .card h3{margin:18px 0 4px; font-size:15.5px; font-weight:700;}
-  .card h3:first-of-type{margin-top:6px;}
+  .online{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--mut);
+    border:1px solid var(--line2); padding:8px 14px; border-radius:999px;}
+  .online .dot{width:8px; height:8px; border-radius:50%; background:var(--ok);}
+  h1{font-size:30px; font-weight:800; letter-spacing:-.6px; margin:10px 2px 4px; line-height:1.15;}
+  .sub{color:var(--mut); font-size:15px; margin:0 2px 8px; line-height:1.55;}
+  .bloco{background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:20px; margin:16px 0;}
+  .bloco > h2{margin:0 0 4px; font-size:21px; font-weight:800; letter-spacing:.4px;}
+  .bloco > h2 .n{color:var(--mut); font-size:14px; letter-spacing:2px; display:block; margin-bottom:4px;}
   .hint{font-size:14px; color:var(--mut); line-height:1.6; margin:4px 0 10px;}
-  label{display:block; font-size:13px; letter-spacing:.4px; font-weight:700; color:var(--mut);
-    text-transform:uppercase; margin:14px 0 2px;}
-
-  /* Botões */
-  button{width:100%; min-height:54px; border-radius:999px; font-size:16px; font-weight:700;
-    background:transparent; color:var(--txt); border:1px solid var(--line2); cursor:pointer;
-    margin:6px 0; padding:12px 20px; font-family:inherit;}
+  label{display:block; font-size:13px; letter-spacing:.4px; font-weight:700; color:var(--mut); text-transform:uppercase; margin:14px 0 2px;}
+  input, select, textarea{width:100%; min-height:54px; border-radius:16px; border:1px solid var(--line2);
+    background:#0e0e10; color:var(--txt); font-size:16.5px; padding:13px 16px; margin:4px 0 6px; font-family:inherit;}
+  textarea{min-height:150px; line-height:1.55; resize:vertical; border-radius:18px;}
+  input::placeholder, textarea::placeholder{color:#5c5c64;}
+  button{width:100%; min-height:56px; border-radius:999px; font-size:16.5px; font-weight:700;
+    background:transparent; color:var(--txt); border:1px solid var(--line2); cursor:pointer; margin:6px 0; padding:12px 20px; font-family:inherit;}
   button:active{transform:scale(.98);}
   button.main{background:#fff; color:var(--ink); border-color:#fff;}
   button.soft{background:var(--surface2); border-color:var(--surface2);}
-  button.danger{background:transparent; color:var(--err); border:1px solid #4a2b2b;}
-  .btnlink{display:block; text-align:center; background:transparent; color:var(--txt); font-weight:700;
-    font-size:15.5px; padding:15px; border-radius:999px; text-decoration:none; margin:6px 0;
-    min-height:54px; border:1px solid var(--line2);}
-  .flow{display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:14px;}
-  .flowcard{background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:20px;}
-  .flowcard .num{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700;}
-  .flowcard h3{margin:8px 0 4px; font-size:19px; font-weight:800;}
-  .flowcard p{margin:0 0 14px; color:var(--mut); font-size:14px; line-height:1.55;}
-  .flowcard button{width:auto; min-height:46px; padding:10px 22px; font-size:14.5px; margin:0;}
-
-  input, select, textarea{width:100%; min-height:54px; border-radius:16px; border:1px solid var(--line2);
-    background:#0e0e10; color:var(--txt); font-size:16.5px; padding:13px 16px; margin:4px 0 6px; font-family:inherit;}
-  textarea{min-height:170px; line-height:1.55; resize:vertical; border-radius:18px;}
-  input::placeholder, textarea::placeholder{color:#5c5c64;}
-  #status{white-space:pre-wrap; font-size:14.5px; line-height:1.75;
-    background:#0e0e10; border:1px solid var(--line); border-radius:18px; padding:14px 16px; min-height:60px;}
-  iframe{width:100%; height:65vh; border:1px solid var(--line); border-radius:18px; background:var(--bg); margin:8px 0 4px;}
-  #fotoAtual{max-width:100%; border-radius:18px; margin:8px 0; display:none;}
-  details{background:var(--surface); border:1px solid var(--line); border-radius:24px;
-    padding:4px 20px; margin-bottom:14px;}
-  details summary{font-size:16px; font-weight:800; padding:16px 0; cursor:pointer; list-style:none;}
-  details summary::-webkit-details-marker{display:none;}
-  details .inner{border-top:1px solid var(--line); padding:6px 0 16px;}
+  button.small{min-height:48px; font-size:15px;}
+  .resumo{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 2px;}
+  .chip{border:1px solid var(--line2); border-radius:999px; padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--mut);}
+  .chip b{color:var(--txt);}
+  .catalogo{width:100%; border-radius:18px; border:1px solid var(--line); margin:8px 0 4px;}
+  .loja{border:1px solid var(--line); background:var(--surface2); border-radius:18px; padding:16px; margin:10px 0;}
+  .loja .pos{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700;}
+  .loja h3{margin:6px 0 2px; font-size:18.5px; font-weight:800;}
+  .loja p{margin:0; color:var(--mut); font-size:14.5px;}
+  .loja .pergunta{display:none; margin-top:10px;}
+  .loja .pergunta p{color:var(--txt); font-weight:700; margin-bottom:8px;}
+  .loja .pergunta .rowbtn{display:flex; gap:8px;}
+  .loja .pergunta button{margin:0;}
+  .contato{display:flex; align-items:center; gap:10px; padding:13px 2px; border-bottom:1px solid var(--line);}
+  .contato:last-child{border-bottom:0;}
+  .contato .info{flex:1; min-width:0;}
+  .contato .info b{display:block; font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .contato .info span{font-size:13px; color:var(--mut);}
+  .tag{flex:0 0 auto; font-size:12px; font-weight:700; padding:6px 11px; border-radius:999px; border:1px solid var(--line2); color:var(--mut);}
+  .tag.espera{color:var(--txt); border-color:var(--txt);}
+  .tag.bloq{color:var(--ink); background:var(--mut); border-color:var(--mut);}
+  .contato.bloqueado{opacity:.45;}
+  .vazio{color:var(--mut); font-size:14.5px; text-align:center; padding:14px 0 6px; line-height:1.6;}
   #msg{display:none; position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:60;
-    max-width:92vw; padding:14px 20px; border-radius:999px; font-size:15px; font-weight:600;
-    box-shadow:0 12px 34px rgba(0,0,0,.6);}
+    max-width:92vw; padding:14px 20px; border-radius:999px; font-size:15px; font-weight:600; box-shadow:0 12px 34px rgba(0,0,0,.6);}
   #msg.ok{display:block; background:#fff; color:var(--ink);}
   #msg.err{display:block; background:#2a1215; color:#ffb4b4; border:1px solid #6e2a2a;}
-  .tabpage{display:none;}
-  .tabpage.active{display:block;}
+  .rodape{color:#5c5c64; font-size:12.5px; text-align:center; line-height:1.7; margin-top:26px;}
+  #chaveBox{display:none;}
 </style>
 </head>
 <body>
-<div class="glow"></div>
 <main>
   <div class="topbar">
     <span class="logo">RESSA LEADS</span>
     <span class="sp"></span>
     <span class="online"><span class="dot"></span>Online</span>
-    <span class="avatar">🦇</span>
   </div>
 
-  <nav class="tabs" id="tabs">
-    <button data-tab="inicio" class="active">Início</button>
-    <button data-tab="extrair">1 · Buscar</button>
-    <button data-tab="leads">2 · Lojas</button>
-    <button data-tab="mensagem">3 · Mensagem</button>
-    <button data-tab="enviar">4 · Enviar</button>
-    <button data-tab="ajustes">Ajustes</button>
-  </nav>
+  <h1>Prospecção simples</h1>
+  <p class="sub">Uma página só: gere os contatos, envie na sequência e quem já recebeu fica bloqueado.</p>
 
-  <!-- INÍCIO -->
-  <section class="tabpage active" id="tab-inicio">
-    <div class="hero">
-      <p class="kicker">OLÁ, REGINALDO</p>
-      <h1>Central de<br>Prospecção</h1>
-      <p>Suas lojas, sua mensagem e seu kit de envio — tudo num lugar só, na ordem certa de usar.</p>
-    </div>
-
-    <div class="flow">
-      <div class="flowcard">
-        <span class="num">PASSO 1</span>
-        <h3>Buscar lojas</h3>
-        <p>Acho vidraçarias no Google Maps e os telefones caem na sua base, sem repetir.</p>
-        <button class="main" data-goto="extrair">Buscar agora →</button>
-      </div>
-      <div class="flowcard">
-        <span class="num">PASSO 2</span>
-        <h3>Ver suas lojas</h3>
-        <p>Toda a sua base: nome, telefone, cidade, nota e endereço de cada loja.</p>
-        <button data-goto="leads">Abrir a lista →</button>
-      </div>
-      <div class="flowcard">
-        <span class="num">PASSOS 3 E 4</span>
-        <h3>Mensagem e envio</h3>
-        <p>Você define a mensagem e a foto — e o kit monta as próximas lojas pra enviar.</p>
-        <button data-goto="enviar">Montar o kit →</button>
-      </div>
-    </div>
-
-    <div class="card" id="tokenCard">
-      <h2>Sua chave de acesso</h2>
-      <input id="token" type="password" placeholder="Cole sua chave aqui" autocomplete="off">
-      <button class="main" data-act="token-save">Salvar chave</button>
-      <p class="hint">É a chave que liga os botões. Fica salva só neste aparelho — você cola uma vez só.</p>
-    </div>
-
-    <div class="card">
-      <h2>Últimas atividades</h2>
-      <div id="status">Toque no botão pra atualizar.</div>
-      <button class="soft" data-act="status">Atualizar</button>
-    </div>
+  <!-- LISTA -->
+  <section class="bloco" id="bloco-lista">
+    <h2><span class="n">PARTE 1</span>LISTA</h2>
+    <p class="hint">Escolha o nicho e a região. Os contatos com WhatsApp caem na base, sem repetir quem já está lá.</p>
+    <label for="exNicho">Nicho</label>
+    <input id="exNicho" type="text" placeholder="Ex.: vidraçaria" autocomplete="off">
+    <label for="exRegiao">Região</label>
+    <input id="exRegiao" type="text" placeholder="Ex.: Suzano SP" autocomplete="off">
+    <label for="exQtd">Quantidade</label>
+    <select id="exQtd">
+      <option value="10">Até 10 contatos</option>
+      <option value="20">Até 20 contatos</option>
+      <option value="40" selected>Até 40 contatos</option>
+      <option value="60">Até 60 contatos</option>
+    </select>
+    <button class="main" id="btnGerar">Gerar leads</button>
+    <button class="soft" id="btnAtualizar">Atualizar a lista</button>
+    <div class="resumo" id="resumo"></div>
   </section>
 
-  <!-- 1 · BUSCAR -->
-  <section class="tabpage" id="tab-extrair">
-    <div class="card">
-      <h2>Buscar lojas novas</h2>
-      <p class="hint">Busco no Google Maps e os telefones novos caem direto na sua base — sem repetir quem já está lá. Leva uns 2 minutinhos.</p>
-      <label for="exNicho">O que buscar</label>
-      <input id="exNicho" type="text" placeholder="Ex.: vidraçaria" autocomplete="off">
-      <label for="exRegiao">Em qual cidade</label>
-      <input id="exRegiao" type="text" placeholder="Ex.: Suzano SP" autocomplete="off">
-      <label for="exQtd">Quantas lojas</label>
-      <select id="exQtd">
-        <option value="10">Até 10 lojas</option>
-        <option value="20">Até 20 lojas</option>
-        <option value="40" selected>Até 40 lojas</option>
-        <option value="60">Até 60 lojas</option>
-      </select>
-      <button class="main" data-act="extract">Buscar agora</button>
-    </div>
+  <!-- KIT -->
+  <section class="bloco" id="bloco-kit">
+    <h2><span class="n">PARTE 2</span>KIT</h2>
+    <p class="hint">Sua imagem é a do catálogo. Segure nela pra salvar e anexe em cada conversa. Depois é só seguir a sequência: toque em <b>Enviar</b>, mande no WhatsApp e confirme — o contato fica <b>bloqueado</b> e sai da fila.</p>
+    <img class="catalogo" src="https://raw.githubusercontent.com/reginaldoferreirarochall-a11y/ressa-leads/main/foto.jpg" alt="Imagem do catálogo">
+    <div id="fila"></div>
   </section>
 
-  <!-- 2 · LOJAS -->
-  <section class="tabpage" id="tab-leads">
-    <div class="card">
-      <h2>Suas lojas</h2>
-      <p class="hint">Sua base inteira, aqui dentro do painel. Depois de atualizar, espera ~1 min e volta nesta aba.</p>
-      <button class="main" data-act="leads-gen">Atualizar a lista</button>
-      <iframe src="leads.html" title="Suas lojas"></iframe>
-      <a class="btnlink" href="leads.html" target="_blank" rel="noopener">Abrir em tela cheia</a>
-    </div>
-
-    <details>
-      <summary>Mais opções</summary>
-      <div class="inner">
-        <h3>Histórico de buscas</h3>
-        <p class="hint">Cada busca que você fez: quantas lojas achou e quantas eram novas.</p>
-        <button data-act="camp-gen">Atualizar histórico</button>
-        <a class="btnlink" href="campaigns.html" target="_blank" rel="noopener">Ver histórico</a>
-
-        <h3>Relatórios</h3>
-        <p class="hint">Quantos clientes você tem, por cidade e por tipo de loja.</p>
-        <button data-act="reports-gen">Atualizar relatórios</button>
-        <a class="btnlink" href="reports.html" target="_blank" rel="noopener">Ver relatórios</a>
-
-        <h3>Baixar planilha (CSV)</h3>
-        <p class="hint">Sua lista inteira numa planilha, pra abrir no Excel.</p>
-        <button data-act="export-gen">Gerar planilha nova</button>
-        <a class="btnlink" href="leads.csv" target="_blank" rel="noopener" download>Baixar planilha</a>
-
-        <h3>Corrigir uma loja</h3>
-        <label for="admPhone">Telefone da loja (com DDD)</label>
-        <input id="admPhone" type="tel" placeholder="Ex.: 11999998888" autocomplete="off">
-        <label for="admNome">Nome da loja (só pra adicionar)</label>
-        <input id="admNome" type="text" placeholder="Nome da loja" autocomplete="off">
-        <label for="admCidade">Cidade (só pra adicionar)</label>
-        <input id="admCidade" type="text" placeholder="Cidade" autocomplete="off">
-        <label for="admAcao">O que fazer</label>
-        <select id="admAcao">
-          <option value="add">Adicionar na fila</option>
-          <option value="queue">Liberar pra fila</option>
-          <option value="hold">Travar (não entra no kit)</option>
-          <option value="sent">Marcar como enviado</option>
-          <option value="invalid">Marcar sem WhatsApp</option>
-          <option value="delete">Excluir loja</option>
-        </select>
-        <button data-act="adm-send">Fazer a correção</button>
-      </div>
-    </details>
+  <!-- CONTATOS -->
+  <section class="bloco" id="bloco-contatos">
+    <h2><span class="n">PARTE 3</span>CONTATOS</h2>
+    <p class="hint">Sua base inteira. Quem já recebeu aparece <b>bloqueado</b> — nunca entra no kit de novo.</p>
+    <input id="busca" type="text" placeholder="Buscar por nome ou cidade..." autocomplete="off">
+    <div id="contatos"></div>
   </section>
 
-  <!-- 3 · MENSAGEM -->
-  <section class="tabpage" id="tab-mensagem">
-    <div class="card">
-      <h2>Sua mensagem</h2>
-      <p class="hint">É essa mensagem que vai pras lojas no kit. Mudou aqui, vale pro próximo kit.</p>
-      <textarea id="cfgMsg" placeholder="Sua mensagem..."></textarea>
-      <button data-act="cfg-load">Ver a mensagem atual</button>
-      <button class="main" data-act="cfg-save">Salvar mensagem</button>
-    </div>
-
-    <div class="card">
-      <h2>Sua foto</h2>
-      <p class="hint">A foto que vai junto em cada conversa do kit.</p>
-      <img id="fotoAtual" alt="Sua foto atual">
-      <input id="fotoFile" type="file" accept="image/*">
-      <button class="main" data-act="foto-send">Trocar a foto</button>
-    </div>
+  <!-- MENSAGEM -->
+  <section class="bloco" id="bloco-mensagem">
+    <h2><span class="n">PARTE 4</span>MENSAGEM</h2>
+    <p class="hint">Digite a mensagem do seu jeito. Ela já vai preenchida quando você toca em Enviar no kit.</p>
+    <textarea id="cfgMsg" placeholder="Sua mensagem..."></textarea>
+    <button class="main" id="btnSalvarMsg">Salvar mensagem</button>
   </section>
 
-  <!-- 4 · ENVIAR -->
-  <section class="tabpage" id="tab-enviar">
-    <div class="card">
-      <h2>Kit de envio</h2>
-      <p class="hint">Junta as próximas lojas da fila com a sua mensagem e a sua foto. Você abre cada conversa e envia no WhatsApp, um toque por loja.</p>
-      <label for="kitQtd">Quantas lojas no kit</label>
-      <input id="kitQtd" type="number" min="1" max="20" value="5">
-      <button class="main" data-act="kit-gen">Montar o kit</button>
-      <iframe src="kit.html" title="Kit de envio"></iframe>
-      <a class="btnlink" href="kit.html" target="_blank" rel="noopener">Abrir o kit em tela cheia</a>
-    </div>
-  </section>
+  <div class="bloco" id="chaveBox">
+    <h2 style="font-size:18px; margin:0 0 4px;">Primeira vez neste aparelho?</h2>
+    <p class="hint">Cole a chave uma única vez. Depois ela some e a página só funciona.</p>
+    <input id="token" type="password" placeholder="Cole a chave aqui" autocomplete="off">
+    <button class="main" id="btnChave">Salvar e pronto</button>
+  </div>
 
-  <!-- AJUSTES -->
-  <section class="tabpage" id="tab-ajustes">
-    <div class="card">
-      <h2>Busca automática de segunda</h2>
-      <p class="hint">Toda segunda-feira, 9h, eu busco lojas sozinho em Itaquaquecetuba, Suzano, Mogi, Guarulhos, Ferraz e Poá — e sua lista cresce sem você fazer nada. Está desligada agora.</p>
-      <button class="main" data-act="agenda-on">Ligar busca automática</button>
-      <button data-act="agenda-off">Desligar</button>
-    </div>
-    <div class="card">
-      <h2>Chave de acesso</h2>
-      <button class="danger" data-act="token-clear">Apagar a chave deste aparelho</button>
-      <p class="hint">Apaga só a chave salva aqui. Suas lojas e o projeto continuam intactos.</p>
-    </div>
-    <div class="card">
-      <h2>Sobre</h2>
-      <p class="hint">RESSA Leads — suas lojas ficam guardadas na nuvem e os robôs trabalham com o PC desligado, sem gastar nada.</p>
-    </div>
-  </section>
+  <p class="rodape">RESSA Leads — os contatos ficam guardados na nuvem<br>e os robôs trabalham com o PC desligado.</p>
 </main>
 
 <div id="msg"></div>
@@ -284,6 +137,9 @@ const OWNER = 'reginaldoferreirarochall-a11y';
 const REPO = 'ressa-leads';
 const RAW = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/';
 const $ = (s) => document.querySelector(s);
+
+let LEADS = [];
+let enviadosLocal = new Set(JSON.parse(localStorage.getItem('ressa_enviados') || '[]'));
 
 function msg(text, ok = true){
   const m = $('#msg');
@@ -302,90 +158,134 @@ async function gh(path, opts = {}){
   if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
   return r.status === 204 ? null : r.json();
 }
-function needToken(){
-  if(!token()){ msg('Falta sua chave — cole ela na tela Início primeiro.', false); return true; }
-  return false;
+async function dispatchWf(file, inputs){
+  const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/workflows/' + file + '/dispatches', {
+    method: 'POST', headers: headers(), body: JSON.stringify({ ref: 'main', inputs })
+  });
+  if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
 }
-async function dispatchWf(file, inputs, label){
-  if(needToken()) return;
-  try{
-    await gh('/actions/workflows/' + file + '/dispatches', {
-      method: 'POST', body: JSON.stringify({ ref: 'main', inputs })
-    });
-    msg('Pronto! ' + label + ' — já estou trabalhando nisso.');
-  }catch(e){ msg('Não foi: ' + e.message + '. Confira sua chave.', false); }
+function pretty(t){
+  t = String(t || '');
+  return t.length === 13 ? '(' + t.slice(2,4) + ') ' + t.slice(4,9) + '-' + t.slice(9)
+    : t.length === 12 ? '(' + t.slice(2,4) + ') ' + t.slice(4,8) + '-' + t.slice(8) : t;
 }
-function nomeAmigavel(name){
-  const n = (name || '').toLowerCase();
-  if(n.includes('extrator') || n.includes('extra')) return 'Busca de lojas';
-  if(n.includes('kit')) return 'Kit de envio';
-  if(n.includes('relat')) return 'Relatórios';
-  if(n.includes('export')) return 'Planilha';
-  if(n.includes('campanha') || n.includes('campaign')) return 'Histórico de buscas';
-  if(n.includes('autom')) return 'Busca automática';
-  if(n.includes('admin')) return 'Correção de loja';
-  if(n.includes('migra')) return 'Ajuste do sistema';
-  if(n.includes('lead') || n.includes('lista')) return 'Lista de lojas';
-  return name;
+function bloqueado(l){
+  return enviadosLocal.has(String(l.id)) || ['sent','replied','links_sent'].includes(l.status);
 }
-async function status(){
-  if(needToken()) return;
-  const el = $('#status');
-  el.textContent = 'Consultando…';
-  try{
-    const runs = await gh('/actions/runs?per_page=6');
-    const lines = (runs.workflow_runs || []).map(r => {
-      const quando = new Date(r.created_at).toLocaleString('pt-BR');
-      const estado = r.status === 'completed' ? (r.conclusion === 'success' ? 'deu certo' : 'não deu') : 'trabalhando…';
-      return '• ' + nomeAmigavel(r.name) + ' — ' + estado + ' — ' + quando;
-    });
-    el.textContent = lines.join('\n') || 'Nada por aqui ainda.';
-  }catch(e){ el.textContent = 'Não consegui consultar: ' + e.message; }
-}
-function extractLeads(){
-  const nicho = $('#exNicho').value.trim();
-  const regiao = $('#exRegiao').value.trim();
-  if(!nicho || !regiao){ msg('Preencha o que buscar e a cidade.', false); return; }
-  return dispatchWf('extract.yml', { nicho, regiao, qtd: $('#exQtd').value }, 'Buscar "' + nicho + ' em ' + regiao + '"');
-}
-function kitGen(){
-  const n = Math.max(1, Math.min(20, parseInt($('#kitQtd').value || '5', 10)));
-  return dispatchWf('kit.yml', { qtd: String(n), incluir: '0' }, 'Montar kit com ' + n + ' lojas');
-}
-function leadsGen(){ return dispatchWf('leads.yml', {}, 'Atualizar sua lista de lojas'); }
-function campGen(){ return dispatchWf('campaigns.yml', {}, 'Atualizar o histórico de buscas'); }
-function reportsGen(){ return dispatchWf('reports.yml', {}, 'Atualizar os relatórios'); }
-function exportGen(){ return dispatchWf('export.yml', {}, 'Gerar sua planilha'); }
-async function setAgenda(on){
-  if(needToken()) return;
-  const val = on ? 'true' : 'false';
-  try{
-    let r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/variables/AGENDA_ENABLED', {
-      method: 'PUT', headers: headers(), body: JSON.stringify({ name: 'AGENDA_ENABLED', value: val })
-    });
-    if(r.status === 404){
-      r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/variables', {
-        method: 'POST', headers: headers(), body: JSON.stringify({ name: 'AGENDA_ENABLED', value: val })
-      });
-    }
-    if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
-    msg(on ? 'Busca automática LIGADA — toda segunda, 9h.' : 'Busca automática DESLIGADA.');
-  }catch(e){ msg('Não foi: ' + e.message, false); }
-}
-function adminSend(){
-  let d = $('#admPhone').value.replace(/\D/g, '');
-  if(d.length === 10 || d.length === 11) d = '55' + d;
-  if(!(d.length === 12 || d.length === 13) || !d.startsWith('55')){
-    msg('Telefone inválido — digite DDD + número.', false); return;
-  }
-  const acao = $('#admAcao').value;
-  const nome = $('#admNome').value.trim();
-  const cidade = $('#admCidade').value.trim();
-  if(acao === 'add' && !nome){ msg('Pra adicionar, preencha o nome da loja.', false); return; }
-  return dispatchWf('admin.yml', { acao, telefone: d, nome, cidade }, 'Corrigir a loja ' + d);
+function naFila(l){
+  return !bloqueado(l) && ['queued','kit'].includes(l.status);
 }
 
-// ---- Arquivos (mensagem e foto) ----
+// ---------- Dados ----------
+async function carregar(){
+  try{
+    const r = await fetch('leads.json?t=' + Date.now());
+    if(!r.ok) throw new Error('lista indisponível');
+    LEADS = await r.json();
+  }catch(e){ LEADS = []; }
+  render();
+}
+function render(){
+  const total = LEADS.length;
+  const fila = LEADS.filter(naFila).length;
+  const env = LEADS.filter(bloqueado).length;
+  $('#resumo').innerHTML =
+    '<span class="chip"><b>' + total + '</b> contatos</span>' +
+    '<span class="chip"><b>' + fila + '</b> esperando envio</span>' +
+    '<span class="chip"><b>' + env + '</b> já enviados (bloqueados)</span>';
+  renderKit();
+  renderContatos();
+}
+
+// ---------- KIT ----------
+function renderKit(){
+  const fila = LEADS.filter(naFila).slice(0, 10);
+  const el = $('#fila');
+  if(!fila.length){
+    el.innerHTML = '<p class="vazio">Nenhum contato esperando.<br>Gere leads na LISTA ou libere contatos travados.</p>';
+    return;
+  }
+  el.innerHTML = fila.map((l, i) =>
+    '<div class="loja" id="loja-' + l.id + '">' +
+      '<span class="pos">' + (i + 1) + ' DE ' + fila.length + ' NA SEQUÊNCIA</span>' +
+      '<h3>' + l.nome + '</h3>' +
+      '<p>' + (l.cidade || '') + ' · ' + pretty(l.telefone) + '</p>' +
+      '<button class="main" onclick="abrirEnvio(' + l.id + ')">Enviar mensagem</button>' +
+      '<div class="pergunta" id="perg-' + l.id + '">' +
+        '<p>Você enviou pra essa loja?</p>' +
+        '<div class="rowbtn">' +
+          '<button class="main small" onclick="confirmarEnvio(' + l.id + ')">Sim, já enviei</button>' +
+          '<button class="small" onclick="voltarEnvio(' + l.id + ')">Ainda não</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+function abrirEnvio(id){
+  const l = LEADS.find(x => x.id === id);
+  if(!l) return;
+  const texto = $('#cfgMsg').value || '';
+  window.open('https://wa.me/' + l.telefone + '?text=' + encodeURIComponent(texto), '_blank');
+  const p = $('#perg-' + id);
+  if(p) p.style.display = 'block';
+}
+function voltarEnvio(id){
+  const p = $('#perg-' + id);
+  if(p) p.style.display = 'none';
+}
+async function confirmarEnvio(id){
+  const l = LEADS.find(x => x.id === id);
+  enviadosLocal.add(String(id));
+  localStorage.setItem('ressa_enviados', JSON.stringify([...enviadosLocal]));
+  render();
+  msg('Bloqueado: ' + (l ? l.nome : 'loja') + ' não aparece mais na fila.');
+  if(l && token()){
+    try{ await dispatchWf('admin.yml', { acao: 'sent', telefone: String(l.telefone), nome: '', cidade: '' }); }
+    catch(e){ /* o bloqueio local já vale neste aparelho */ }
+  }
+}
+
+// ---------- CONTATOS ----------
+function renderContatos(){
+  const q = ($('#busca').value || '').toLowerCase();
+  const lista = LEADS.filter(l => !q || (l.nome || '').toLowerCase().includes(q) || (l.cidade || '').toLowerCase().includes(q));
+  const el = $('#contatos');
+  if(!lista.length){ el.innerHTML = '<p class="vazio">Nenhum contato encontrado.</p>'; return; }
+  el.innerHTML = lista.map(l => {
+    const b = bloqueado(l);
+    const tag = b ? '<span class="tag bloq">Já enviado · bloqueado</span>'
+      : l.status === 'hold' ? '<span class="tag">Travado</span>'
+      : l.status === 'invalid' ? '<span class="tag">Sem WhatsApp</span>'
+      : '<span class="tag espera">Esperando</span>';
+    return '<div class="contato' + (b ? ' bloqueado' : '') + '">' +
+      '<div class="info"><b>' + l.nome + '</b><span>' + (l.cidade || '') + ' · ' + pretty(l.telefone) + '</span></div>' +
+      tag + '</div>';
+  }).join('');
+}
+
+// ---------- LISTA (gerar) ----------
+async function gerar(){
+  const nicho = $('#exNicho').value.trim();
+  const regiao = $('#exRegiao').value.trim();
+  if(!nicho || !regiao){ msg('Preencha o nicho e a região.', false); return; }
+  if(!token()){ mostrarChave(); msg('Falta só colar a chave uma vez, aqui embaixo.', false); return; }
+  try{
+    await dispatchWf('extract.yml', { nicho, regiao, qtd: $('#exQtd').value });
+    msg('Buscando "' + nicho + ' em ' + regiao + '"... leva uns 2 minutos.');
+    let tentativas = 0;
+    const antes = LEADS.length;
+    const timer = setInterval(async () => {
+      tentativas++;
+      await carregar();
+      if(LEADS.length > antes || tentativas >= 8){
+        clearInterval(timer);
+        if(LEADS.length > antes) msg('Chegaram ' + (LEADS.length - antes) + ' contatos novos!');
+      }
+    }, 30000);
+  }catch(e){ msg('Não foi: ' + e.message, false); }
+}
+
+// ---------- MENSAGEM ----------
 function b64decodeText(b64){
   const bytes = Uint8Array.from(atob(b64.replace(/\s/g, '')), c => c.charCodeAt(0));
   return new TextDecoder().decode(bytes);
@@ -396,109 +296,52 @@ function b64encodeText(txt){
   bytes.forEach(b => { bin += String.fromCharCode(b); });
   return btoa(bin);
 }
-async function getFile(path){
-  return gh('/contents/' + path);
-}
-async function cfgLoad(){
-  if(needToken()) return;
+async function carregarMensagem(){
+  const local = localStorage.getItem('ressa_msg');
+  if(local){ $('#cfgMsg').value = local; return; }
   try{
-    const f = await getFile('config.json');
-    const cfg = JSON.parse(b64decodeText(f.content));
+    const r = await fetch(RAW + 'config.json?t=' + Date.now());
+    const cfg = await r.json();
     $('#cfgMsg').value = cfg.mensagem || '';
-    showFoto(cfg.foto || 'foto.jpg');
-    msg('Mensagem atual carregada.');
-  }catch(e){ msg('Não carregou: ' + e.message, false); }
+  }catch(e){}
 }
-async function cfgSave(){
-  if(needToken()) return;
+async function salvarMensagem(){
   const nova = $('#cfgMsg').value;
   if(!nova.trim()){ msg('A mensagem está vazia.', false); return; }
+  localStorage.setItem('ressa_msg', nova);
+  if(!token()){ msg('Mensagem salva neste aparelho.'); return; }
   try{
-    const f = await getFile('config.json');
+    const f = await gh('/contents/config.json');
     const cfg = JSON.parse(b64decodeText(f.content));
     cfg.mensagem = nova;
     await gh('/contents/config.json', {
       method: 'PUT',
-      body: JSON.stringify({ message: 'Mensagem da campanha atualizada pelo painel', content: b64encodeText(JSON.stringify(cfg, null, 2)), sha: f.sha })
+      body: JSON.stringify({ message: 'Mensagem atualizada pela página', content: b64encodeText(JSON.stringify(cfg, null, 2)), sha: f.sha })
     });
-    msg('Mensagem salva! Vale pro próximo kit.');
-  }catch(e){ msg('Não salvou: ' + e.message, false); }
-}
-function showFoto(path){
-  const img = $('#fotoAtual');
-  img.src = RAW + path + '?t=' + Date.now();
-  img.style.display = 'block';
-}
-async function fotoSend(){
-  if(needToken()) return;
-  const file = $('#fotoFile').files[0];
-  if(!file){ msg('Escolha uma foto primeiro.', false); return; }
-  if(file.size > 1000000){ msg('Foto maior que 1 MB — reduza e tente de novo.', false); return; }
-  try{
-    let sha = null;
-    try{ sha = (await getFile('foto.jpg')).sha; }catch(e){}
-    const dataUrl = await new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result);
-      r.onerror = rej;
-      r.readAsDataURL(file);
-    });
-    const b64 = String(dataUrl).split(',')[1];
-    await gh('/contents/foto.jpg', {
-      method: 'PUT',
-      body: JSON.stringify({ message: 'Foto da campanha atualizada pelo painel', content: b64, sha: sha || undefined })
-    });
-    showFoto('foto.jpg');
-    msg('Foto trocada! Vale pro próximo kit.');
-  }catch(e){ msg('Não enviou: ' + e.message, false); }
+    msg('Mensagem salva!');
+  }catch(e){ msg('Salva neste aparelho (a nuvem não respondeu).'); }
 }
 
-// Abas
-function goTab(name){
-  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('active', x.dataset.tab === name));
-  document.querySelectorAll('.tabpage').forEach(p => p.classList.remove('active'));
-  $('#tab-' + name).classList.add('active');
-  window.scrollTo({ top: 0 });
-  if(name === 'mensagem' && token() && !$('#cfgMsg').value) cfgLoad();
+// ---------- Chave (só aparece se faltar) ----------
+function mostrarChave(){ $('#chaveBox').style.display = 'block'; }
+function salvarChave(){
+  const v = $('#token').value.trim();
+  if(!v){ msg('Cole a chave primeiro.', false); return; }
+  localStorage.setItem('ressa_pat', v);
+  $('#chaveBox').style.display = 'none';
+  msg('Pronto! Agora é só usar.');
 }
-document.querySelectorAll('#tabs button').forEach(b => {
-  b.addEventListener('click', () => goTab(b.dataset.tab));
-});
-document.querySelectorAll('[data-goto]').forEach(b => {
-  b.addEventListener('click', () => goTab(b.dataset.goto));
-});
 
-document.querySelectorAll('[data-act]').forEach(b => {
-  b.addEventListener('click', () => {
-    const a = b.dataset.act;
-    if(a === 'token-save'){
-      const v = $('#token').value.trim();
-      if(!v){ msg('Cole a chave primeiro.', false); return; }
-      localStorage.setItem('ressa_pat', v);
-      msg('Chave salva neste aparelho!');
-      status();
-    }
-    if(a === 'token-clear'){
-      localStorage.removeItem('ressa_pat');
-      const t = $('#token'); if(t) t.value = '';
-      msg('Chave apagada deste aparelho.');
-    }
-    if(a === 'status')    status();
-    if(a === 'extract')   extractLeads();
-    if(a === 'kit-gen')   kitGen();
-    if(a === 'leads-gen') leadsGen();
-    if(a === 'camp-gen')  campGen();
-    if(a === 'reports-gen') reportsGen();
-    if(a === 'export-gen')  exportGen();
-    if(a === 'agenda-on')   setAgenda(true);
-    if(a === 'agenda-off')  setAgenda(false);
-    if(a === 'adm-send')  adminSend();
-    if(a === 'cfg-load')  cfgLoad();
-    if(a === 'cfg-save')  cfgSave();
-    if(a === 'foto-send') fotoSend();
-  });
-});
-if(token()){ $('#token').value = token(); status(); showFoto('foto.jpg'); }
+// ---------- Ligações ----------
+$('#btnGerar').addEventListener('click', gerar);
+$('#btnAtualizar').addEventListener('click', async () => { await carregar(); msg('Lista atualizada.'); });
+$('#btnSalvarMsg').addEventListener('click', salvarMensagem);
+$('#btnChave').addEventListener('click', salvarChave);
+$('#busca').addEventListener('input', renderContatos);
+$('#cfgMsg').addEventListener('input', () => localStorage.setItem('ressa_msg', $('#cfgMsg').value));
+if(!token()) mostrarChave();
+carregarMensagem();
+carregar();
 </script>
 </body>
 </html>
