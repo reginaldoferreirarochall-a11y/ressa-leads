@@ -32,14 +32,31 @@
   button:active{transform:scale(.98);}
   button.main{background:#fff; color:var(--ink); border-color:#fff;}
   button.soft{background:var(--surface2); border-color:var(--surface2);}
-  #andamento{display:none; text-align:center; padding:16px 0 6px;}
-  #andamento .bola{width:14px; height:14px; border-radius:50%; background:#fff; margin:0 auto 12px;
+  button.small{min-height:48px; font-size:15px;}
+  button:disabled{opacity:.45;}
+  .andamento{display:none; text-align:center; padding:14px 0 4px;}
+  .andamento .bola{width:14px; height:14px; border-radius:50%; background:#fff; margin:0 auto 12px;
     animation:pulsa 1s ease-in-out infinite;}
   @keyframes pulsa{0%,100%{transform:scale(1); opacity:.5} 50%{transform:scale(1.5); opacity:1}}
-  #andamento p{color:var(--mut); font-size:14.5px; margin:0; line-height:1.6;}
+  .andamento p{color:var(--mut); font-size:14.5px; margin:0; line-height:1.6;}
   .resumo{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 4px;}
   .chip{border:1px solid var(--line2); border-radius:999px; padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--mut);}
   .chip b{color:var(--txt);}
+  .catalogo{width:100%; border-radius:18px; border:1px solid var(--line); margin:8px 0 4px;}
+  .item{border:1px solid var(--line); background:var(--surface2); border-radius:18px; padding:16px; margin:10px 0;}
+  .item .pos{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700;}
+  .item h3{margin:6px 0 2px; font-size:18px; font-weight:800;}
+  .item p{margin:0; color:var(--mut); font-size:14.5px;}
+  .item .rowbtn{display:flex; gap:8px; margin-top:10px;}
+  .item .rowbtn button{margin:0;}
+  .item.enviado{border-color:#1e4630; background:#101a13;}
+  .item .feito{display:flex; align-items:center; gap:8px; margin-top:10px; font-weight:800; color:var(--ok); font-size:15.5px;}
+  .fechada{display:flex; align-items:center; gap:10px; padding:13px 2px; border-bottom:1px solid var(--line);}
+  .fechada:last-child{border-bottom:0;}
+  .fechada .info{flex:1;}
+  .fechada .info b{display:block; font-size:15.5px;}
+  .fechada .info span{font-size:13px; color:var(--mut);}
+  .tag{flex:0 0 auto; font-size:12px; font-weight:700; padding:6px 11px; border-radius:999px; background:var(--mut); color:var(--ink);}
   .contato{display:flex; align-items:center; gap:10px; padding:13px 2px; border-bottom:1px solid var(--line); cursor:pointer;}
   .contato:last-child{border-bottom:0;}
   .contato .info{flex:1; min-width:0;}
@@ -64,10 +81,11 @@
   </div>
 
   <h1>Extrator de leads</h1>
-  <p class="sub">Digite o nicho e a região. Eu busco as empresas no Google Maps e monto sua lista de contatos com WhatsApp.</p>
+  <p class="sub">Extraia os contatos, puxe uma lista, envie e feche a lista. Quem já recebeu nunca volta.</p>
 
+  <!-- EXTRAIR -->
   <section class="bloco">
-    <h2>Extrair contatos</h2>
+    <h2>1 · Extrair contatos</h2>
     <label for="exNicho">Nicho</label>
     <input id="exNicho" type="text" placeholder="Ex.: vidraçaria" autocomplete="off">
     <label for="exRegiao">Região</label>
@@ -80,20 +98,38 @@
       <option value="60">Até 60 contatos</option>
     </select>
     <button class="main" id="btnExtrair">Extrair contatos</button>
-    <div id="andamento">
+    <div class="andamento" id="andExtrair">
       <div class="bola"></div>
-      <p>Buscando no Google Maps...<br>leva uns 2 minutos. Pode deixar essa tela aberta.</p>
+      <p>Buscando no Google Maps... leva uns 2 minutos.</p>
     </div>
   </section>
 
+  <!-- LISTA DE ENVIO -->
   <section class="bloco">
-    <h2>Seus contatos</h2>
+    <h2>2 · Lista de envio</h2>
+    <div id="listaArea"></div>
+    <div class="andamento" id="andLista">
+      <div class="bola"></div>
+      <p>Atualizando a lista...</p>
+    </div>
+  </section>
+
+  <!-- LISTAS FECHADAS -->
+  <section class="bloco">
+    <h2>3 · Listas fechadas</h2>
+    <p class="hint">Histórico travado: os enviados dessas listas <b>nunca</b> aparecem de novo — nem em extração nova, nem em lista nova.</p>
+    <div id="fechadas"></div>
+  </section>
+
+  <!-- CONTATOS -->
+  <section class="bloco">
+    <h2>4 · Seus contatos</h2>
     <div class="resumo" id="resumo"></div>
     <input id="busca" type="text" placeholder="Buscar por nome ou cidade..." autocomplete="off">
     <div id="contatos"></div>
     <button class="soft" id="btnCsv">Baixar a lista (CSV)</button>
-    <button id="btnAtualizar">Atualizar a lista</button>
-    <p class="hint">Toque num contato pra copiar o número. O CSV abre no Excel e no Google Planilhas.</p>
+    <button id="btnAtualizar">Atualizar</button>
+    <p class="hint">Toque num contato pra copiar o número.</p>
   </section>
 
   <div class="bloco" id="chaveBox">
@@ -103,7 +139,7 @@
     <button class="main" id="btnChave">Salvar e pronto</button>
   </div>
 
-  <p class="rodape">RESSA Leads — os contatos ficam guardados na nuvem<br>e a extração roda com o PC desligado.</p>
+  <p class="rodape">RESSA Leads — extração e listas rodam na nuvem,<br>com o PC desligado.</p>
 </main>
 
 <div id="msg"></div>
@@ -111,9 +147,13 @@
 <script>
 const OWNER = 'reginaldoferreirarochall-a11y';
 const REPO = 'ressa-leads';
+const RAW = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/';
 const $ = (s) => document.querySelector(s);
 
 let LEADS = [];
+let MENSAGEM = '';
+let enviadosLocal = new Set(JSON.parse(localStorage.getItem('ressa_enviados2') || '[]'));
+let confirmarFechar = false;
 
 function msg(text, ok = true){
   const m = $('#msg');
@@ -132,27 +172,124 @@ function pretty(t){
   return t.length === 13 ? '(' + t.slice(2,4) + ') ' + t.slice(4,9) + '-' + t.slice(9)
     : t.length === 12 ? '(' + t.slice(2,4) + ') ' + t.slice(4,8) + '-' + t.slice(8) : t;
 }
+async function dispatch(file, inputs){
+  const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/workflows/' + file + '/dispatches', {
+    method: 'POST', headers: headers(), body: JSON.stringify({ ref: 'main', inputs })
+  });
+  if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
+}
+function foiEnviado(l){
+  return enviadosLocal.has(String(l.telefone)) || ['sent','replied','links_sent'].includes(l.status);
+}
+function listaAbertaId(){
+  const l = LEADS.find(x => x.status === 'kit' && x.lista);
+  return l ? l.lista : null;
+}
+function livres(){
+  return LEADS.filter(l => l.status === 'queued' || (l.status === 'kit' && !l.lista)).length;
+}
 
+// ---------- Dados ----------
 async function carregar(){
   try{
     const r = await fetch('leads.json?t=' + Date.now());
-    if(!r.ok) throw new Error('lista indisponível');
-    LEADS = await r.json();
-  }catch(e){ /* mantém o que já tinha */ }
+    if(r.ok) LEADS = await r.json();
+  }catch(e){}
   render();
 }
+async function carregarMensagem(){
+  try{
+    const r = await fetch(RAW + 'config.json?t=' + Date.now());
+    const cfg = await r.json();
+    MENSAGEM = cfg.mensagem || '';
+  }catch(e){}
+}
+function aguardar(mudou, tentativasMax){
+  let n = 0;
+  const antes = JSON.stringify(LEADS.map(l => l.id + l.status + (l.lista || '')));
+  const timer = setInterval(async () => {
+    n++;
+    await carregar();
+    const agora = JSON.stringify(LEADS.map(l => l.id + l.status + (l.lista || '')));
+    if(agora !== antes || n >= (tentativasMax || 8)){
+      clearInterval(timer);
+      document.querySelectorAll('.andamento').forEach(a => a.style.display = 'none');
+      if(mudou) mudou(agora !== antes);
+    }
+  }, 20000);
+}
+
+// ---------- Render ----------
 function render(){
+  renderLista();
+  renderFechadas();
+  renderContatos();
+}
+function renderLista(){
+  const area = $('#listaArea');
+  const aberta = listaAbertaId();
+  if(!aberta){
+    area.innerHTML =
+      '<p class="hint">Nenhuma lista aberta. Você tem <b style="color:var(--txt)">' + livres() + ' contatos livres</b> na fila. Puxe uma lista pra começar a enviar — um por vez, com controle.</p>' +
+      '<label for="listaQtd">Quantos contatos na lista</label>' +
+      '<select id="listaQtd"><option value="5">5 contatos</option><option value="10" selected>10 contatos</option><option value="20">20 contatos</option></select>' +
+      '<button class="main" onclick="puxarLista()">Puxar uma lista</button>';
+    return;
+  }
+  const itens = LEADS.filter(l => l.lista === aberta && (l.status === 'kit' || foiEnviado(l)));
+  const env = itens.filter(foiEnviado).length;
+  let h = '<p class="hint">Lista de <b style="color:var(--txt)">' + aberta + '</b> — ' + env + ' de ' + itens.length + ' enviados. A mensagem é a sua salva; anexe a foto do catálogo na conversa.</p>';
+  h += '<a href="' + RAW + 'foto.jpg" target="_blank" rel="noopener"><img class="catalogo" src="' + RAW + 'foto.jpg" alt="Foto do catálogo"></a>';
+  h += itens.map((l, i) => {
+    if(foiEnviado(l)){
+      return '<div class="item enviado"><span class="pos">' + (i + 1) + ' DE ' + itens.length + '</span>' +
+        '<h3>' + l.nome + '</h3><p>' + (l.cidade || '') + ' · ' + pretty(l.telefone) + '</p>' +
+        '<div class="feito">✓ ENVIADO — bloqueado</div></div>';
+    }
+    return '<div class="item"><span class="pos">' + (i + 1) + ' DE ' + itens.length + '</span>' +
+      '<h3>' + l.nome + '</h3><p>' + (l.cidade || '') + ' · ' + pretty(l.telefone) + '</p>' +
+      '<div class="rowbtn">' +
+        '<button class="soft small" onclick="abrirZap(\'' + l.telefone + '\')">Abrir no WhatsApp</button>' +
+        '<button class="main small" onclick="marcarEnviado(\'' + l.telefone + '\')">✓ Já enviei</button>' +
+      '</div></div>';
+  }).join('');
+  if(confirmarFechar){
+    h += '<p class="hint" style="margin-top:14px;">Fechar a lista? Ela <b>trava</b>: os enviados viram histórico e quem ficou sem envio volta pra fila.</p>' +
+      '<button class="main" onclick="fecharLista()">Confirmar — fechar e travar</button>' +
+      '<button onclick="confirmarFechar=false; renderLista();">Cancelar</button>';
+  } else {
+    h += '<button style="margin-top:14px;" onclick="confirmarFechar=true; renderLista();">Fechar esta lista</button>';
+  }
+  area.innerHTML = h;
+}
+function renderFechadas(){
+  const aberta = listaAbertaId();
+  const grupos = {};
+  for(const l of LEADS){
+    if(l.lista && l.lista !== aberta && ['sent','replied','links_sent'].includes(l.status)){
+      grupos[l.lista] = (grupos[l.lista] || 0) + 1;
+    }
+  }
+  const nomes = Object.keys(grupos);
+  const el = $('#fechadas');
+  if(!nomes.length){ el.innerHTML = '<p class="vazio">Nenhuma lista fechada ainda.</p>'; return; }
+  el.innerHTML = nomes.map(n =>
+    '<div class="fechada"><div class="info"><b>Lista de ' + n + '</b><span>' + grupos[n] + ' enviados</span></div><span class="tag">TRAVADA</span></div>'
+  ).join('');
+}
+function renderContatos(){
   const cidades = new Set(LEADS.map(l => l.cidade).filter(Boolean)).size;
   $('#resumo').innerHTML =
     '<span class="chip"><b>' + LEADS.length + '</b> contatos</span>' +
-    '<span class="chip"><b>' + cidades + '</b> cidades</span>';
+    '<span class="chip"><b>' + cidades + '</b> cidades</span>' +
+    '<span class="chip"><b>' + LEADS.filter(foiEnviado).length + '</b> já enviados</span>';
   const q = ($('#busca').value || '').toLowerCase();
   const lista = LEADS.filter(l => !q || (l.nome || '').toLowerCase().includes(q) || (l.cidade || '').toLowerCase().includes(q));
   const el = $('#contatos');
-  if(!lista.length){ el.innerHTML = '<p class="vazio">Nenhum contato ainda.<br>Extraia o primeiro nicho aqui em cima.</p>'; return; }
+  if(!lista.length){ el.innerHTML = '<p class="vazio">Nenhum contato encontrado.</p>'; return; }
   el.innerHTML = lista.map(l =>
     '<div class="contato" onclick="copiar(\'' + l.telefone + '\')">' +
-      '<div class="info"><b>' + l.nome + '</b><span>' + (l.cidade || '') + '</span></div>' +
+      '<div class="info"><b>' + l.nome + '</b><span>' + (l.cidade || '') + (foiEnviado(l) ? ' · já enviado' : '') + '</span></div>' +
       '<span class="zap">' + pretty(l.telefone) + '</span>' +
     '</div>'
   ).join('');
@@ -162,6 +299,7 @@ function copiar(tel){
   msg('Número copiado: ' + pretty(tel));
 }
 
+// ---------- Ações ----------
 async function extrair(){
   const nicho = $('#exNicho').value.trim();
   const regiao = $('#exRegiao').value.trim();
@@ -169,36 +307,59 @@ async function extrair(){
   if(!token()){ mostrarChave(); msg('Falta só colar a chave uma vez, aqui embaixo.', false); return; }
   const btn = $('#btnExtrair');
   btn.disabled = true;
-  $('#andamento').style.display = 'block';
+  $('#andExtrair').style.display = 'block';
   try{
-    const r = await fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/actions/workflows/extract.yml/dispatches', {
-      method: 'POST', headers: headers(), body: JSON.stringify({ ref: 'main', inputs: { nicho, regiao, qtd: $('#exQtd').value } })
-    });
-    if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
+    await dispatch('extract.yml', { nicho, regiao, qtd: $('#exQtd').value });
     const antes = LEADS.length;
-    let tentativas = 0;
-    const timer = setInterval(async () => {
-      tentativas++;
-      await carregar();
-      if(LEADS.length > antes){
-        clearInterval(timer);
-        $('#andamento').style.display = 'none';
-        btn.disabled = false;
-        msg('Pronto! ' + (LEADS.length - antes) + ' contatos novos na lista.');
-      } else if(tentativas >= 10){
-        clearInterval(timer);
-        $('#andamento').style.display = 'none';
-        btn.disabled = false;
-        msg('A busca terminou — se a lista não mudou, eram contatos repetidos.');
-      }
-    }, 30000);
+    aguardar((mudou) => {
+      btn.disabled = false;
+      msg(mudou && LEADS.length > antes ? 'Pronto! ' + (LEADS.length - antes) + ' contatos novos.' : 'Busca concluída.');
+    }, 10);
   }catch(e){
-    $('#andamento').style.display = 'none';
+    $('#andExtrair').style.display = 'none';
     btn.disabled = false;
     msg('Não foi: ' + e.message, false);
   }
 }
-
+async function puxarLista(){
+  if(!token()){ mostrarChave(); msg('Falta só colar a chave uma vez, aqui embaixo.', false); return; }
+  const qtd = ($('#listaQtd') || {}).value || '10';
+  $('#andLista').style.display = 'block';
+  try{
+    await dispatch('lista.yml', { acao: 'puxar', qtd, telefone: '', lista: '' });
+    aguardar((mudou) => msg(mudou ? 'Lista puxada! Pode começar a enviar.' : 'A lista está a caminho — toque em Atualizar em instantes.'), 8);
+  }catch(e){
+    $('#andLista').style.display = 'none';
+    msg('Não foi: ' + e.message, false);
+  }
+}
+function abrirZap(tel){
+  window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(MENSAGEM), '_blank');
+}
+async function marcarEnviado(tel){
+  enviadosLocal.add(String(tel));
+  localStorage.setItem('ressa_enviados2', JSON.stringify([...enviadosLocal]));
+  render();
+  msg('Marcado como enviado e bloqueado.');
+  if(token()){
+    try{ await dispatch('lista.yml', { acao: 'enviar', qtd: '', telefone: String(tel), lista: '' }); }
+    catch(e){ /* o bloqueio local já vale neste aparelho */ }
+    aguardar(null, 4);
+  }
+}
+async function fecharLista(){
+  const aberta = listaAbertaId();
+  if(!aberta) return;
+  confirmarFechar = false;
+  $('#andLista').style.display = 'block';
+  try{
+    await dispatch('lista.yml', { acao: 'fechar', qtd: '', telefone: '', lista: aberta });
+    aguardar((mudou) => msg('Lista fechada e travada. Pode puxar uma nova.'), 8);
+  }catch(e){
+    $('#andLista').style.display = 'none';
+    msg('Não foi: ' + e.message, false);
+  }
+}
 function baixarCsv(){
   if(!LEADS.length){ msg('A lista está vazia.', false); return; }
   const q = (v) => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
@@ -210,22 +371,22 @@ function baixarCsv(){
   URL.revokeObjectURL(a.href);
   msg('Lista baixada: ' + LEADS.length + ' contatos.');
 }
-
 function mostrarChave(){ $('#chaveBox').style.display = 'block'; }
 function salvarChave(){
   const v = $('#token').value.trim();
   if(!v){ msg('Cole a chave primeiro.', false); return; }
   localStorage.setItem('ressa_pat', v);
   $('#chaveBox').style.display = 'none';
-  msg('Pronto! Agora é só extrair.');
+  msg('Pronto! Agora é só usar.');
 }
 
 $('#btnExtrair').addEventListener('click', extrair);
-$('#btnAtualizar').addEventListener('click', async () => { await carregar(); msg('Lista atualizada.'); });
+$('#btnAtualizar').addEventListener('click', async () => { await carregar(); msg('Atualizado.'); });
 $('#btnCsv').addEventListener('click', baixarCsv);
 $('#btnChave').addEventListener('click', salvarChave);
-$('#busca').addEventListener('input', render);
+$('#busca').addEventListener('input', renderContatos);
 if(!token()) mostrarChave();
+carregarMensagem();
 carregar();
 </script>
 </body>
