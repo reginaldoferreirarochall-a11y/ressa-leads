@@ -3,235 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>RESSA Leads — Minhas Lojas</title>
+<title>RESSA Leads</title>
 <style>
   :root{
-    --bg:#f4f5f7; --card:#ffffff; --line:#e5e6ea;
-    --navy:#16386e; --navy2:#1f4c94; --gold:#f2b33d;
-    --txt:#16181d; --mut:#6d7280; --err:#c0392b;
-    --shadow:0 2px 14px rgba(22,40,80,.07);
+    --bg:#0a0a0b; --surface:#141417; --surface2:#1b1b1f; --line:#26262b; --line2:#3a3a41;
+    --txt:#f5f5f4; --mut:#9c9ca3; --ink:#0a0a0b; --err:#ff9c9c;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body{margin:0; font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
-    background:var(--bg); color:var(--txt); padding-bottom:100px;}
-  main{max-width:520px; margin:0 auto; padding:20px 16px 8px;}
-  .head{display:flex; align-items:center; gap:14px; margin-bottom:6px;}
-  .avatar{width:54px; height:54px; border-radius:50%; background:var(--navy); color:#fff;
-    display:flex; align-items:center; justify-content:center; font-size:26px; flex:0 0 auto;
-    box-shadow:var(--shadow);}
-  .head h1{margin:0; font-size:24px; font-weight:800; letter-spacing:-.3px;}
-  .head p{margin:2px 0 0; color:var(--mut); font-size:14px;}
-  .online{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700;
-    color:#1c7c3c; background:#e3f5e9; padding:5px 10px; border-radius:999px; margin-left:auto;}
-  .online .dot{width:8px; height:8px; border-radius:50%; background:#22a355;}
-  .card{background:var(--card); border:1px solid var(--line); border-radius:20px;
-    padding:18px; margin:14px 0; box-shadow:var(--shadow);}
-  .card h2{margin:0 0 6px; font-size:18px; font-weight:800;}
-  .hint{font-size:14px; color:var(--mut); line-height:1.55; margin:4px 0 10px;}
-  label{display:block; font-size:14px; font-weight:700; margin:12px 0 2px;}
-  button{width:100%; min-height:58px; border-radius:16px; font-size:16.5px; font-weight:700;
-    background:#fff; color:var(--navy); border:1.5px solid var(--navy); cursor:pointer; margin:6px 0; padding:12px;}
+    background:var(--bg); color:var(--txt);}
+  .glow{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;}
+  .glow::before{content:''; position:absolute; width:420px; height:420px; border-radius:50%;
+    right:-160px; top:-180px; filter:blur(90px); opacity:.14;
+    background:radial-gradient(circle, #ffffff, transparent 65%);}
+  main{position:relative; z-index:1; max-width:560px; margin:0 auto; padding:16px 14px 40px;}
+
+  /* Topo */
+  .topbar{display:flex; align-items:center; gap:10px; padding:6px 2px 14px;}
+  .logo{background:#fff; color:var(--ink); font-weight:800; font-size:13px; letter-spacing:.6px;
+    padding:9px 16px; border-radius:999px;}
+  .topbar .sp{flex:1;}
+  .online{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600;
+    color:var(--mut); border:1px solid var(--line2); padding:8px 14px; border-radius:999px;}
+  .online .dot{width:8px; height:8px; border-radius:50%; background:#4ade80;}
+  .avatar{width:38px; height:38px; border-radius:50%; background:var(--surface2);
+    border:1px solid var(--line2); display:flex; align-items:center; justify-content:center; font-size:18px;}
+
+  /* Abas em pílula */
+  .tabs{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tabs button{flex:0 0 auto; width:auto; min-height:44px; padding:10px 18px; border-radius:999px;
+    background:transparent; color:var(--txt); border:1px solid var(--line2);
+    font-size:14.5px; font-weight:600; cursor:pointer; margin:0;}
+  .tabs button.active{background:#fff; color:var(--ink); border-color:#fff;}
+
+  /* Cartões */
+  .hero{background:var(--surface); border:1px solid var(--line); border-radius:24px;
+    padding:26px 22px; margin-bottom:14px; overflow:hidden; position:relative;}
+  .hero::after{content:''; position:absolute; width:300px; height:300px; border-radius:50%;
+    right:-110px; bottom:-150px; filter:blur(60px); opacity:.10; background:#fff;}
+  .hero .kicker{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700; margin:0 0 10px;}
+  .hero h1{margin:0; font-size:31px; line-height:1.16; font-weight:800; letter-spacing:-.6px;}
+  .hero p{margin:12px 0 0; color:var(--mut); font-size:15px; line-height:1.6; max-width:42ch;}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:24px;
+    padding:20px; margin-bottom:14px;}
+  .card h2{margin:0 0 6px; font-size:18px; font-weight:800; letter-spacing:-.2px;}
+  .card h3{margin:18px 0 4px; font-size:15.5px; font-weight:700;}
+  .card h3:first-of-type{margin-top:6px;}
+  .hint{font-size:14px; color:var(--mut); line-height:1.6; margin:4px 0 10px;}
+  label{display:block; font-size:13px; letter-spacing:.4px; font-weight:700; color:var(--mut);
+    text-transform:uppercase; margin:14px 0 2px;}
+
+  /* Botões */
+  button{width:100%; min-height:54px; border-radius:999px; font-size:16px; font-weight:700;
+    background:transparent; color:var(--txt); border:1px solid var(--line2); cursor:pointer;
+    margin:6px 0; padding:12px 20px; font-family:inherit;}
   button:active{transform:scale(.98);}
-  button.main{background:var(--navy); color:#fff; border-color:var(--navy);}
-  button.gold{background:var(--gold); color:#231a02; border-color:var(--gold);}
-  button.soft{background:#eef2fa; color:var(--navy); border-color:#eef2fa;}
-  button.danger{background:#fff; color:var(--err); border:1.5px solid #eec9c4;}
-  .btnlink{display:block; text-align:center; background:#fff; color:var(--navy); font-weight:700;
-    font-size:16.5px; padding:16px; border-radius:16px; text-decoration:none; margin:6px 0;
-    min-height:58px; border:1.5px solid var(--navy);}
-  .big{display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px;}
-  .big .ic{font-size:28px;}
-  .big .t{font-size:17.5px; font-weight:800; color:var(--txt); display:block;}
-  .big .s{font-size:13.5px; font-weight:500; color:var(--mut); display:block; margin-top:2px;}
-  input, select, textarea{width:100%; min-height:54px; border-radius:14px; border:1.5px solid var(--line);
-    background:#fbfbfc; color:var(--txt); font-size:16.5px; padding:13px 14px; margin:4px 0 6px; font-family:inherit;}
-  textarea{min-height:170px; line-height:1.5; resize:vertical;}
-  input::placeholder, textarea::placeholder{color:#9aa0ab;}
-  #status{white-space:pre-wrap; font-size:15px; line-height:1.7;
-    background:#fbfbfc; border:1.5px solid var(--line); border-radius:16px; padding:14px 16px; min-height:60px;}
-  #fotoAtual{max-width:100%; border-radius:14px; margin:8px 0; display:none;}
-  #msg{display:none; position:fixed; left:50%; transform:translateX(-50%); bottom:106px; z-index:60;
-    max-width:92vw; padding:14px 18px; border-radius:16px; font-size:15px; font-weight:600;
-    box-shadow:0 10px 34px rgba(0,0,0,.25);}
-  #msg.ok{display:block; background:var(--navy); color:#fff;}
-  #msg.err{display:block; background:#fdecea; color:#8c2318; border:1px solid #eec9c4;}
-  details{background:var(--card); border:1px solid var(--line); border-radius:20px;
-    padding:6px 18px; margin:14px 0; box-shadow:var(--shadow);}
-  details summary{font-size:16px; font-weight:800; padding:14px 0; cursor:pointer; list-style:none;}
+  button.main{background:#fff; color:var(--ink); border-color:#fff;}
+  button.soft{background:var(--surface2); border-color:var(--surface2);}
+  button.danger{background:transparent; color:var(--err); border:1px solid #4a2b2b;}
+  .btnlink{display:block; text-align:center; background:transparent; color:var(--txt); font-weight:700;
+    font-size:15.5px; padding:15px; border-radius:999px; text-decoration:none; margin:6px 0;
+    min-height:54px; border:1px solid var(--line2);}
+  .flow{display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:14px;}
+  .flowcard{background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:20px;}
+  .flowcard .num{font-size:12px; letter-spacing:2px; color:var(--mut); font-weight:700;}
+  .flowcard h3{margin:8px 0 4px; font-size:19px; font-weight:800;}
+  .flowcard p{margin:0 0 14px; color:var(--mut); font-size:14px; line-height:1.55;}
+  .flowcard button{width:auto; min-height:46px; padding:10px 22px; font-size:14.5px; margin:0;}
+
+  input, select, textarea{width:100%; min-height:54px; border-radius:16px; border:1px solid var(--line2);
+    background:#0e0e10; color:var(--txt); font-size:16.5px; padding:13px 16px; margin:4px 0 6px; font-family:inherit;}
+  textarea{min-height:170px; line-height:1.55; resize:vertical; border-radius:18px;}
+  input::placeholder, textarea::placeholder{color:#5c5c64;}
+  #status{white-space:pre-wrap; font-size:14.5px; line-height:1.75;
+    background:#0e0e10; border:1px solid var(--line); border-radius:18px; padding:14px 16px; min-height:60px;}
+  iframe{width:100%; height:65vh; border:1px solid var(--line); border-radius:18px; background:var(--bg); margin:8px 0 4px;}
+  #fotoAtual{max-width:100%; border-radius:18px; margin:8px 0; display:none;}
+  details{background:var(--surface); border:1px solid var(--line); border-radius:24px;
+    padding:4px 20px; margin-bottom:14px;}
+  details summary{font-size:16px; font-weight:800; padding:16px 0; cursor:pointer; list-style:none;}
   details summary::-webkit-details-marker{display:none;}
-  details .inner{border-top:1px solid var(--line); padding:12px 0 16px;}
-  details .inner h3{margin:16px 0 4px; font-size:15.5px;}
-  details .inner h3:first-child{margin-top:2px;}
+  details .inner{border-top:1px solid var(--line); padding:6px 0 16px;}
+  #msg{display:none; position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:60;
+    max-width:92vw; padding:14px 20px; border-radius:999px; font-size:15px; font-weight:600;
+    box-shadow:0 12px 34px rgba(0,0,0,.6);}
+  #msg.ok{display:block; background:#fff; color:var(--ink);}
+  #msg.err{display:block; background:#2a1215; color:#ffb4b4; border:1px solid #6e2a2a;}
   .tabpage{display:none;}
   .tabpage.active{display:block;}
-  nav{position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(255,255,255,.96);
-    backdrop-filter:blur(12px); border-top:1px solid var(--line);
-    padding:8px 8px calc(8px + env(safe-area-inset-bottom));}
-  nav .row{max-width:520px; margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr); gap:4px;}
-  nav button{min-height:58px; margin:0; border:0; background:transparent; color:var(--mut);
-    font-size:11.5px; font-weight:600; border-radius:14px; padding:6px 2px;}
-  nav button .ic{display:block; font-size:21px; margin-bottom:2px;}
-  nav button.active{background:var(--navy); color:#fff;}
 </style>
 </head>
 <body>
+<div class="glow"></div>
 <main>
-  <div class="head">
-    <span class="avatar">🦇</span>
-    <div>
-      <h1>Olá, Reginaldo</h1>
-      <p>Sua central de clientes</p>
-    </div>
+  <div class="topbar">
+    <span class="logo">RESSA LEADS</span>
+    <span class="sp"></span>
     <span class="online"><span class="dot"></span>Online</span>
+    <span class="avatar">🦇</span>
   </div>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="inicio" class="active">Início</button>
+    <button data-tab="extrair">1 · Buscar</button>
+    <button data-tab="leads">2 · Lojas</button>
+    <button data-tab="mensagem">3 · Mensagem</button>
+    <button data-tab="enviar">4 · Enviar</button>
+    <button data-tab="ajustes">Ajustes</button>
+  </nav>
 
   <!-- INÍCIO -->
   <section class="tabpage active" id="tab-inicio">
-    <div class="card" id="tokenCard">
-      <h2>🔑 Sua chave de acesso</h2>
-      <input id="token" type="password" placeholder="Cole sua chave aqui" autocomplete="off">
-      <button class="main" data-act="token-save">Salvar chave</button>
-      <p class="hint">É a chave que liga os botões. Fica salva <b>só neste aparelho</b> — você cola uma vez só.</p>
+    <div class="hero">
+      <p class="kicker">OLÁ, REGINALDO</p>
+      <h1>Central de<br>Prospecção</h1>
+      <p>Suas lojas, sua mensagem e seu kit de envio — tudo num lugar só, na ordem certa de usar.</p>
     </div>
 
-    <button class="main big" data-goto="extrair"><span class="ic">🔍</span><span><span class="t">Buscar lojas novas</span><span class="s">Acho vidraçarias no Google Maps pra você</span></span></button>
-    <button class="gold big" data-goto="leads"><span class="ic">📋</span><span><span class="t">Montar meu kit de envio</span><span class="s">Lojas + sua mensagem + sua foto, prontos pra enviar</span></span></button>
-    <button class="soft big" data-goto="leads"><span class="ic">👀</span><span><span class="t">Ver minhas lojas</span><span class="s">Sua lista de clientes, aqui dentro do painel</span></span></button>
+    <div class="flow">
+      <div class="flowcard">
+        <span class="num">PASSO 1</span>
+        <h3>Buscar lojas</h3>
+        <p>Acho vidraçarias no Google Maps e os telefones caem na sua base, sem repetir.</p>
+        <button class="main" data-goto="extrair">Buscar agora →</button>
+      </div>
+      <div class="flowcard">
+        <span class="num">PASSO 2</span>
+        <h3>Ver suas lojas</h3>
+        <p>Toda a sua base: nome, telefone, cidade, nota e endereço de cada loja.</p>
+        <button data-goto="leads">Abrir a lista →</button>
+      </div>
+      <div class="flowcard">
+        <span class="num">PASSOS 3 E 4</span>
+        <h3>Mensagem e envio</h3>
+        <p>Você define a mensagem e a foto — e o kit monta as próximas lojas pra enviar.</p>
+        <button data-goto="enviar">Montar o kit →</button>
+      </div>
+    </div>
+
+    <div class="card" id="tokenCard">
+      <h2>Sua chave de acesso</h2>
+      <input id="token" type="password" placeholder="Cole sua chave aqui" autocomplete="off">
+      <button class="main" data-act="token-save">Salvar chave</button>
+      <p class="hint">É a chave que liga os botões. Fica salva só neste aparelho — você cola uma vez só.</p>
+    </div>
 
     <div class="card">
-      <h2>🕐 O que aconteceu por aqui</h2>
+      <h2>Últimas atividades</h2>
       <div id="status">Toque no botão pra atualizar.</div>
-      <button class="soft" data-act="status">🔄 Atualizar</button>
+      <button class="soft" data-act="status">Atualizar</button>
     </div>
   </section>
 
-  <!-- BUSCAR -->
+  <!-- 1 · BUSCAR -->
   <section class="tabpage" id="tab-extrair">
     <div class="card">
-      <h2>🔍 Buscar lojas novas</h2>
-      <label for="exNicho">O que você quer buscar?</label>
+      <h2>Buscar lojas novas</h2>
+      <p class="hint">Busco no Google Maps e os telefones novos caem direto na sua base — sem repetir quem já está lá. Leva uns 2 minutinhos.</p>
+      <label for="exNicho">O que buscar</label>
       <input id="exNicho" type="text" placeholder="Ex.: vidraçaria" autocomplete="off">
-      <label for="exRegiao">Em qual cidade?</label>
+      <label for="exRegiao">Em qual cidade</label>
       <input id="exRegiao" type="text" placeholder="Ex.: Suzano SP" autocomplete="off">
-      <label for="exQtd">Quantas lojas?</label>
+      <label for="exQtd">Quantas lojas</label>
       <select id="exQtd">
         <option value="10">Até 10 lojas</option>
         <option value="20">Até 20 lojas</option>
         <option value="40" selected>Até 40 lojas</option>
         <option value="60">Até 60 lojas</option>
       </select>
-      <button class="main" data-act="extract">🔍 Buscar agora</button>
-      <p class="hint">Busco no Google Maps e os telefones novos caem direto na sua lista — <b>sem repetir</b> quem já está lá. Leva uns 2 minutinhos.</p>
+      <button class="main" data-act="extract">Buscar agora</button>
     </div>
   </section>
 
-  <!-- LOJAS -->
+  <!-- 2 · LOJAS -->
   <section class="tabpage" id="tab-leads">
     <div class="card">
-      <h2>👀 Minhas lojas</h2>
-      <p class="hint">Todas as lojas que você já capturou, com telefone e cidade — <b>aqui dentro</b>, sem sair do painel. Depois de atualizar, espera ~1 min e volta nesta aba.</p>
-      <button class="main" data-act="leads-gen">🔄 Atualizar minha lista</button>
-      <iframe src="leads.html" title="Minhas lojas" style="width:100%;height:65vh;border:1.5px solid var(--line);border-radius:14px;background:#fff;"></iframe>
-      <a class="btnlink" href="leads.html" target="_blank" rel="noopener">📂 Abrir em tela cheia</a>
-    </div>
-
-    <div class="card">
-      <h2>📋 Kit de envio</h2>
-      <p class="hint">Junta as próximas lojas da fila com a <b>sua mensagem e a sua foto</b>. Você abre o kit e envia no WhatsApp, um toque por loja.</p>
-      <label for="kitQtd">Quantas lojas no kit?</label>
-      <input id="kitQtd" type="number" min="1" max="20" value="5">
-      <button class="gold" data-act="kit-gen">📋 Montar o kit</button>
-      <iframe src="kit.html" title="Kit de envio" style="width:100%;height:65vh;border:1.5px solid var(--line);border-radius:14px;background:#fff;"></iframe>
-      <a class="btnlink" href="kit.html" target="_blank" rel="noopener">📂 Abrir o kit em tela cheia</a>
+      <h2>Suas lojas</h2>
+      <p class="hint">Sua base inteira, aqui dentro do painel. Depois de atualizar, espera ~1 min e volta nesta aba.</p>
+      <button class="main" data-act="leads-gen">Atualizar a lista</button>
+      <iframe src="leads.html" title="Suas lojas"></iframe>
+      <a class="btnlink" href="leads.html" target="_blank" rel="noopener">Abrir em tela cheia</a>
     </div>
 
     <details>
-      <summary>⚙️ Mais opções</summary>
+      <summary>Mais opções</summary>
       <div class="inner">
-        <h3>📊 Histórico de buscas</h3>
+        <h3>Histórico de buscas</h3>
         <p class="hint">Cada busca que você fez: quantas lojas achou e quantas eram novas.</p>
-        <button data-act="camp-gen">🔄 Atualizar histórico</button>
-        <a class="btnlink" href="campaigns.html" target="_blank" rel="noopener">📂 Ver histórico</a>
+        <button data-act="camp-gen">Atualizar histórico</button>
+        <a class="btnlink" href="campaigns.html" target="_blank" rel="noopener">Ver histórico</a>
 
-        <h3>📈 Relatórios</h3>
+        <h3>Relatórios</h3>
         <p class="hint">Quantos clientes você tem, por cidade e por tipo de loja.</p>
-        <button data-act="reports-gen">🔄 Atualizar relatórios</button>
-        <a class="btnlink" href="reports.html" target="_blank" rel="noopener">📂 Ver relatórios</a>
+        <button data-act="reports-gen">Atualizar relatórios</button>
+        <a class="btnlink" href="reports.html" target="_blank" rel="noopener">Ver relatórios</a>
 
-        <h3>⬇️ Baixar planilha (CSV)</h3>
+        <h3>Baixar planilha (CSV)</h3>
         <p class="hint">Sua lista inteira numa planilha, pra abrir no Excel.</p>
-        <button data-act="export-gen">🔄 Gerar planilha nova</button>
-        <a class="btnlink" href="leads.csv" target="_blank" rel="noopener" download>⬇️ Baixar planilha</a>
+        <button data-act="export-gen">Gerar planilha nova</button>
+        <a class="btnlink" href="leads.csv" target="_blank" rel="noopener" download>Baixar planilha</a>
 
-        <h3>✏️ Corrigir uma loja</h3>
+        <h3>Corrigir uma loja</h3>
         <label for="admPhone">Telefone da loja (com DDD)</label>
         <input id="admPhone" type="tel" placeholder="Ex.: 11999998888" autocomplete="off">
         <label for="admNome">Nome da loja (só pra adicionar)</label>
         <input id="admNome" type="text" placeholder="Nome da loja" autocomplete="off">
         <label for="admCidade">Cidade (só pra adicionar)</label>
         <input id="admCidade" type="text" placeholder="Cidade" autocomplete="off">
-        <label for="admAcao">O que fazer?</label>
+        <label for="admAcao">O que fazer</label>
         <select id="admAcao">
-          <option value="add">➕ Adicionar na fila</option>
-          <option value="queue">🟢 Liberar pra fila</option>
-          <option value="hold">⏸️ Travar (não entra no kit)</option>
-          <option value="sent">✅ Marcar como enviado</option>
-          <option value="invalid">🚫 Marcar sem WhatsApp</option>
-          <option value="delete">🗑️ Excluir loja</option>
+          <option value="add">Adicionar na fila</option>
+          <option value="queue">Liberar pra fila</option>
+          <option value="hold">Travar (não entra no kit)</option>
+          <option value="sent">Marcar como enviado</option>
+          <option value="invalid">Marcar sem WhatsApp</option>
+          <option value="delete">Excluir loja</option>
         </select>
-        <button data-act="adm-send">✏️ Fazer a correção</button>
+        <button data-act="adm-send">Fazer a correção</button>
       </div>
     </details>
   </section>
 
-  <!-- MENSAGEM -->
+  <!-- 3 · MENSAGEM -->
   <section class="tabpage" id="tab-mensagem">
     <div class="card">
-      <h2>✍️ Sua mensagem</h2>
+      <h2>Sua mensagem</h2>
       <p class="hint">É essa mensagem que vai pras lojas no kit. Mudou aqui, vale pro próximo kit.</p>
       <textarea id="cfgMsg" placeholder="Sua mensagem..."></textarea>
-      <button data-act="cfg-load">↩️ Ver a mensagem atual</button>
-      <button class="main" data-act="cfg-save">💾 Salvar mensagem</button>
+      <button data-act="cfg-load">Ver a mensagem atual</button>
+      <button class="main" data-act="cfg-save">Salvar mensagem</button>
     </div>
 
     <div class="card">
-      <h2>🖼️ Sua foto</h2>
+      <h2>Sua foto</h2>
       <p class="hint">A foto que vai junto em cada conversa do kit.</p>
       <img id="fotoAtual" alt="Sua foto atual">
       <input id="fotoFile" type="file" accept="image/*">
-      <button class="main" data-act="foto-send">⬆️ Trocar a foto</button>
+      <button class="main" data-act="foto-send">Trocar a foto</button>
+    </div>
+  </section>
+
+  <!-- 4 · ENVIAR -->
+  <section class="tabpage" id="tab-enviar">
+    <div class="card">
+      <h2>Kit de envio</h2>
+      <p class="hint">Junta as próximas lojas da fila com a sua mensagem e a sua foto. Você abre cada conversa e envia no WhatsApp, um toque por loja.</p>
+      <label for="kitQtd">Quantas lojas no kit</label>
+      <input id="kitQtd" type="number" min="1" max="20" value="5">
+      <button class="main" data-act="kit-gen">Montar o kit</button>
+      <iframe src="kit.html" title="Kit de envio"></iframe>
+      <a class="btnlink" href="kit.html" target="_blank" rel="noopener">Abrir o kit em tela cheia</a>
     </div>
   </section>
 
   <!-- AJUSTES -->
   <section class="tabpage" id="tab-ajustes">
     <div class="card">
-      <h2>🤖 Busca automática de segunda</h2>
-      <p class="hint">Toda <b>segunda-feira, 9h</b>, eu busco lojas sozinho em Itaquaquecetuba, Suzano, Mogi, Guarulhos, Ferraz e Poá — e sua lista cresce sem você fazer nada. Está <b>desligada</b> agora.</p>
-      <button class="main" data-act="agenda-on">▶️ Ligar busca automática</button>
-      <button data-act="agenda-off">⏸️ Desligar</button>
+      <h2>Busca automática de segunda</h2>
+      <p class="hint">Toda segunda-feira, 9h, eu busco lojas sozinho em Itaquaquecetuba, Suzano, Mogi, Guarulhos, Ferraz e Poá — e sua lista cresce sem você fazer nada. Está desligada agora.</p>
+      <button class="main" data-act="agenda-on">Ligar busca automática</button>
+      <button data-act="agenda-off">Desligar</button>
     </div>
     <div class="card">
-      <h2>🔑 Chave de acesso</h2>
-      <button class="danger" data-act="token-clear">🗑️ Apagar a chave deste aparelho</button>
+      <h2>Chave de acesso</h2>
+      <button class="danger" data-act="token-clear">Apagar a chave deste aparelho</button>
       <p class="hint">Apaga só a chave salva aqui. Suas lojas e o projeto continuam intactos.</p>
     </div>
     <div class="card">
-      <h2>ℹ️ Sobre</h2>
+      <h2>Sobre</h2>
       <p class="hint">RESSA Leads — suas lojas ficam guardadas na nuvem e os robôs trabalham com o PC desligado, sem gastar nada.</p>
     </div>
   </section>
 </main>
-
-<nav>
-  <div class="row">
-    <button data-tab="inicio" class="active"><span class="ic">🏠</span>Início</button>
-    <button data-tab="extrair"><span class="ic">🔍</span>Buscar</button>
-    <button data-tab="leads"><span class="ic">👀</span>Lojas</button>
-    <button data-tab="mensagem"><span class="ic">✍️</span>Mensagem</button>
-    <button data-tab="ajustes"><span class="ic">⚙️</span>Ajustes</button>
-  </div>
-</nav>
 
 <div id="msg"></div>
 
@@ -268,20 +312,20 @@ async function dispatchWf(file, inputs, label){
     await gh('/actions/workflows/' + file + '/dispatches', {
       method: 'POST', body: JSON.stringify({ ref: 'main', inputs })
     });
-    msg('✅ Pronto! ' + label + ' — já estou trabalhando nisso.');
+    msg('Pronto! ' + label + ' — já estou trabalhando nisso.');
   }catch(e){ msg('Não foi: ' + e.message + '. Confira sua chave.', false); }
 }
 function nomeAmigavel(name){
   const n = (name || '').toLowerCase();
-  if(n.includes('extrator') || n.includes('extra')) return '🔍 Busca de lojas';
-  if(n.includes('kit')) return '📋 Kit de envio';
-  if(n.includes('relat')) return '📈 Relatórios';
-  if(n.includes('export')) return '⬇️ Planilha';
-  if(n.includes('campanha') || n.includes('campaign')) return '📊 Histórico de buscas';
-  if(n.includes('autom')) return '🤖 Busca automática';
-  if(n.includes('admin')) return '✏️ Correção de loja';
-  if(n.includes('migra')) return '🔧 Ajuste do sistema';
-  if(n.includes('lead') || n.includes('lista')) return '👀 Lista de lojas';
+  if(n.includes('extrator') || n.includes('extra')) return 'Busca de lojas';
+  if(n.includes('kit')) return 'Kit de envio';
+  if(n.includes('relat')) return 'Relatórios';
+  if(n.includes('export')) return 'Planilha';
+  if(n.includes('campanha') || n.includes('campaign')) return 'Histórico de buscas';
+  if(n.includes('autom')) return 'Busca automática';
+  if(n.includes('admin')) return 'Correção de loja';
+  if(n.includes('migra')) return 'Ajuste do sistema';
+  if(n.includes('lead') || n.includes('lista')) return 'Lista de lojas';
   return name;
 }
 async function status(){
@@ -292,7 +336,7 @@ async function status(){
     const runs = await gh('/actions/runs?per_page=6');
     const lines = (runs.workflow_runs || []).map(r => {
       const quando = new Date(r.created_at).toLocaleString('pt-BR');
-      const estado = r.status === 'completed' ? (r.conclusion === 'success' ? '✅ deu certo' : '❌ não deu') : '⏳ trabalhando…';
+      const estado = r.status === 'completed' ? (r.conclusion === 'success' ? 'deu certo' : 'não deu') : 'trabalhando…';
       return '• ' + nomeAmigavel(r.name) + ' — ' + estado + ' — ' + quando;
     });
     el.textContent = lines.join('\n') || 'Nada por aqui ainda.';
@@ -325,7 +369,7 @@ async function setAgenda(on){
       });
     }
     if(!r.ok) throw new Error('GitHub respondeu ' + r.status);
-    msg(on ? '✅ Busca automática LIGADA — toda segunda, 9h.' : '⏸️ Busca automática DESLIGADA.');
+    msg(on ? 'Busca automática LIGADA — toda segunda, 9h.' : 'Busca automática DESLIGADA.');
   }catch(e){ msg('Não foi: ' + e.message, false); }
 }
 function adminSend(){
@@ -377,7 +421,7 @@ async function cfgSave(){
       method: 'PUT',
       body: JSON.stringify({ message: 'Mensagem da campanha atualizada pelo painel', content: b64encodeText(JSON.stringify(cfg, null, 2)), sha: f.sha })
     });
-    msg('💾 Mensagem salva! Vale pro próximo kit.');
+    msg('Mensagem salva! Vale pro próximo kit.');
   }catch(e){ msg('Não salvou: ' + e.message, false); }
 }
 function showFoto(path){
@@ -405,19 +449,19 @@ async function fotoSend(){
       body: JSON.stringify({ message: 'Foto da campanha atualizada pelo painel', content: b64, sha: sha || undefined })
     });
     showFoto('foto.jpg');
-    msg('🖼️ Foto trocada! Vale pro próximo kit.');
+    msg('Foto trocada! Vale pro próximo kit.');
   }catch(e){ msg('Não enviou: ' + e.message, false); }
 }
 
 // Abas
 function goTab(name){
-  document.querySelectorAll('nav button[data-tab]').forEach(x => x.classList.toggle('active', x.dataset.tab === name));
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('active', x.dataset.tab === name));
   document.querySelectorAll('.tabpage').forEach(p => p.classList.remove('active'));
   $('#tab-' + name).classList.add('active');
   window.scrollTo({ top: 0 });
   if(name === 'mensagem' && token() && !$('#cfgMsg').value) cfgLoad();
 }
-document.querySelectorAll('nav button[data-tab]').forEach(b => {
+document.querySelectorAll('#tabs button').forEach(b => {
   b.addEventListener('click', () => goTab(b.dataset.tab));
 });
 document.querySelectorAll('[data-goto]').forEach(b => {
@@ -431,7 +475,7 @@ document.querySelectorAll('[data-act]').forEach(b => {
       const v = $('#token').value.trim();
       if(!v){ msg('Cole a chave primeiro.', false); return; }
       localStorage.setItem('ressa_pat', v);
-      msg('🔑 Chave salva neste aparelho!');
+      msg('Chave salva neste aparelho!');
       status();
     }
     if(a === 'token-clear'){
