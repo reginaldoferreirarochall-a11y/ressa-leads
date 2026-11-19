@@ -1,0 +1,63 @@
+name: RESSA Listas de Envio
+
+on:
+  workflow_dispatch:
+    inputs:
+      acao:
+        description: 'puxar, enviar ou fechar'
+        required: true
+        type: string
+      qtd:
+        description: 'Quantidade (só pra puxar)'
+        required: false
+        default: '10'
+        type: string
+      telefone:
+        description: 'Telefone (só pra enviar)'
+        required: false
+        type: string
+      lista:
+        description: 'Qual lista (só pra fechar)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ressa-listas
+  cancel-in-progress: false
+
+jobs:
+  lista:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependência do Neon
+        run: npm install --no-save @neondatabase/serverless
+      - name: Executar ação da lista
+        run: |
+          if [ "${{ inputs.acao }}" = "puxar" ]; then
+            node lista.js puxar "${{ inputs.qtd }}"
+          elif [ "${{ inputs.acao }}" = "enviar" ]; then
+            node lista.js enviar "${{ inputs.telefone }}"
+          elif [ "${{ inputs.acao }}" = "fechar" ]; then
+            node lista.js fechar "${{ inputs.lista }}"
+          else
+            echo "Ação desconhecida: ${{ inputs.acao }}"
+            exit 1
+          fi
+      - name: Publicar lista atualizada
+        run: |
+          git config user.name "RESSA Listas"
+          git config user.email "actions@github.com"
+          git add docs/leads.html docs/leads.json
+          git commit -m "Listas atualizadas" || echo "sem mudanças"
+          git pull --rebase origin main || true
+          git push || echo "push falhou — a próxima atualização resolve"
